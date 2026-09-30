@@ -101,10 +101,9 @@ All admin pages include:
 
 ## Cloudflare deployment
 
-The `opus55video` Worker is configured for `opus55video.net`. Before enabling
-automatic deployment, create a fresh D1 database and replace
-`REPLACE_WITH_NEW_D1_DATABASE_ID` in `wrangler.production.json`. Cloudflare
-Workers Builds then runs `pnpm cf:ci:build` followed by
+The `opus55video` Worker (`opus55video.net`) builds and deploys automatically
+on every push to `main` via Cloudflare Workers Builds (Git integration connected
+in the dashboard). Build command: `pnpm cf:ci:build`; deploy command:
 `pnpm exec wrangler deploy`.
 
 [`wrangler.production.json`](./wrangler.production.json) is the tracked source
