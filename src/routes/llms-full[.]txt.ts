@@ -6,8 +6,14 @@ import { m } from '@/paraglide/messages.js';
 const STATIC_PAGES: { path: string; title: string; description: string }[] = [
   {
     path: '',
-    title: 'Hotel Lobby AI Filter',
-    description: 'Two-person duet planning and prompt guide',
+    title: 'opus55video AI Video Generation',
+    description:
+      'Cutting-edge platform to experience the latest trending AI video generation',
+  },
+  {
+    path: '/create',
+    title: 'AI Video Studio',
+    description: 'Turn a text prompt into a cinematic video',
   },
   {
     path: '/privacy-policy',

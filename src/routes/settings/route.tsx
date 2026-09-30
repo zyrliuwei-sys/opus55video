@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 import {
+  Clapperboard,
   Coins,
   CreditCard,
   Home,
@@ -27,6 +28,12 @@ function SettingsLayout() {
       href: '/settings',
       label: m['settings.nav.overview'](),
       icon: LayoutDashboard,
+      group,
+    },
+    {
+      href: '/create',
+      label: m['settings.nav.video'](),
+      icon: Clapperboard,
       group,
     },
     {

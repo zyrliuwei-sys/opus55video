@@ -16,8 +16,10 @@ const publicEnv = (key: string) => metaEnv[key] ?? procEnv[key];
 export const envConfigs: Record<string, string> = {
   // App (public)
   app_url: publicEnv('VITE_APP_URL') ?? 'http://localhost:3000',
-  app_name: publicEnv('VITE_APP_NAME') ?? 'ShipAny',
-  app_description: publicEnv('VITE_APP_DESCRIPTION') ?? 'Ship your SaaS faster',
+  app_name: publicEnv('VITE_APP_NAME') ?? 'opus55video',
+  app_description:
+    publicEnv('VITE_APP_DESCRIPTION') ??
+    'A cutting-edge AI video generation platform. Experience the latest trending AI video generation features.',
   app_logo: publicEnv('VITE_APP_LOGO') ?? '/logo.svg',
 
   // Database

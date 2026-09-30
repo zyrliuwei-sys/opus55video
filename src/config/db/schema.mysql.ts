@@ -561,3 +561,30 @@ export type NewTicketMessage = typeof ticketMessage.$inferInsert;
 
 // ─── Custom tables ───────────────────────────────────────────────────────────
 // Add your own tables below this line.
+
+// ─── Public video generation ────────────────────────────────────────────────
+
+export const publicVideoTask = table(
+  'public_video_task',
+  {
+    id: varchar191('id').primaryKey(),
+    visitorHash: varchar('visitor_hash', { length: 64 }).notNull(),
+    ipHash: varchar('ip_hash', { length: 64 }).notNull(),
+    prompt: longtext('prompt').notNull(),
+    aspectRatio: varchar('aspect_ratio', { length: 8 }).notNull(),
+    duration: varchar('duration', { length: 4 }).notNull(),
+    status: varchar('status', { length: 20 }).notNull(),
+    providerTaskId: varchar191('provider_task_id'),
+    videoUrl: text('video_url'),
+    error: text('error'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
+  },
+  (t) => [
+    index('idx_public_video_visitor_created').on(t.visitorHash, t.createdAt),
+    index('idx_public_video_ip_created').on(t.ipHash, t.createdAt),
+    index('idx_public_video_created').on(t.createdAt),
+  ]
+);
+
+export type PublicVideoTask = typeof publicVideoTask.$inferSelect;

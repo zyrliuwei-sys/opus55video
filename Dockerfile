@@ -33,9 +33,9 @@ WORKDIR /app
 # such as AUTH_SECRET and DATABASE_URL must be supplied to the running container.
 ENV NODE_ENV=production
 
-ARG VITE_APP_URL=https://hotel-lobby.org
-ARG VITE_APP_NAME="Hotel Lobby AI"
-ARG VITE_APP_DESCRIPTION="Plan a two-person Hotel Lobby AI filter video and copy a prompt for an image-to-video studio."
+ARG VITE_APP_URL=https://opus55video.net
+ARG VITE_APP_NAME="opus55video"
+ARG VITE_APP_DESCRIPTION="Create cinematic AI videos from text prompts."
 ARG VITE_APP_LOGO=/logo.svg
 ARG VITE_DEFAULT_LOCALE=en
 ENV VITE_APP_URL=${VITE_APP_URL} \

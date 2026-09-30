@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { envConfigs } from '@/config';
 import { m } from '@/paraglide/messages.js';
 import { getLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
-import { HotelLobbyPage } from '@/blocks/hotel-lobby';
+import { OpusHome } from '@/blocks/opus-home';
 
 export const Route = createFileRoute('/')({
   loader: () => ({ locale: getLocale() }),
@@ -25,7 +25,7 @@ export const Route = createFileRoute('/')({
         { property: 'og:type', content: 'website' },
         {
           property: 'og:image',
-          content: `${envConfigs.app_url}/imgs/generated/hotel-lobby-duet.png`,
+          content: `${envConfigs.app_url}/imgs/generated/opus-hero-eclipse.jpg`,
         },
         { name: 'twitter:card', content: 'summary_large_image' },
       ],
@@ -48,11 +48,11 @@ export const Route = createFileRoute('/')({
             description,
             url: urlFor(locale),
             inLanguage: locale,
-            primaryImageOfPage: `${envConfigs.app_url}/imgs/generated/hotel-lobby-duet.png`,
+            primaryImageOfPage: `${envConfigs.app_url}/imgs/generated/opus-hero-eclipse.jpg`,
           }),
         },
       ],
     };
   },
-  component: HotelLobbyPage,
+  component: OpusHome,
 });

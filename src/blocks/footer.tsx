@@ -4,29 +4,29 @@ import { SiteFooter, type FooterColumn } from '@/components/site-footer';
 export function Footer() {
   const columns: FooterColumn[] = [
     {
-      title: m['landing.footer.feature'](),
+      title: m['opus.footer.product'](),
       links: [
-        { label: m['hotel.nav.create'](), href: '/#create' },
-        { label: m['hotel.nav.how'](), href: '/#how' },
+        { label: m['opus.nav.create'](), href: '/create' },
+        { label: m['opus.nav.features'](), href: '/#tools' },
       ],
     },
     {
-      title: m['landing.footer.resources'](),
+      title: m['opus.footer.company'](),
       links: [
         {
-          label: 'support@hotel-lobby.org',
-          href: 'mailto:support@hotel-lobby.org',
+          label: 'support@opus55video.net',
+          href: 'mailto:support@opus55video.net',
         },
       ],
     },
     {
-      title: m['landing.footer.legal'](),
+      title: m['opus.footer.legal'](),
       links: [
-        { label: m['landing.footer.privacy'](), href: '/privacy-policy' },
-        { label: m['landing.footer.terms'](), href: '/terms-of-service' },
+        { label: m['opus.footer.privacy'](), href: '/privacy-policy' },
+        { label: m['opus.footer.terms'](), href: '/terms-of-service' },
       ],
     },
   ];
 
-  return <SiteFooter tagline={m['hotel.footer.line']()} columns={columns} />;
+  return <SiteFooter tagline={m['opus.footer.tagline']()} columns={columns} />;
 }

@@ -6,12 +6,14 @@ const config = JSON.parse(readFileSync('wrangler.production.json', 'utf8'));
 const vars = config.vars;
 
 if (
-  config.name !== 'hotel-lobby-ai' ||
+  config.name !== 'opus55video' ||
   vars?.DATABASE_PROVIDER !== 'd1' ||
   !/^https:\/\//.test(vars.VITE_APP_URL) ||
   !/^[0-9a-f-]{36}$/.test(config.d1_databases?.[0]?.database_id ?? '')
 ) {
-  throw new Error('Invalid production Worker config');
+  throw new Error(
+    'Invalid production Worker config. Create a new opus55video D1 database and set its ID in wrangler.production.json before deploying.'
+  );
 }
 
 writeFileSync('wrangler.jsonc', `${JSON.stringify(config, null, 2)}\n`);

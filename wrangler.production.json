@@ -1,23 +1,23 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "hotel-lobby-ai",
+  "name": "opus55video",
   "compatibility_flags": ["nodejs_compat"],
   "observability": { "enabled": true },
   "vars": {
     "DATABASE_PROVIDER": "d1",
-    "VITE_APP_URL": "https://hotel-lobby.org",
-    "VITE_APP_NAME": "Hotel Lobby AI",
-    "VITE_APP_DESCRIPTION": "Plan a two-person Hotel Lobby AI filter video and copy a prompt for an image-to-video studio.",
+    "VITE_APP_URL": "https://opus55video.net",
+    "VITE_APP_NAME": "opus55video",
+    "VITE_APP_DESCRIPTION": "Create cinematic AI videos from text prompts.",
     "VITE_APP_LOGO": "/logo.svg",
     "VITE_DEFAULT_LOCALE": "en"
   },
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "hotel-lobby-db",
-      "database_id": "9c9d279e-2929-4b38-9d0f-0259fb6a96dd",
+      "database_name": "opus55video-db",
+      "database_id": "292a70f8-5d63-42b6-b979-0aadb53e0ba6",
       "migrations_dir": "drizzle"
     }
   ],
-  "routes": [{ "pattern": "hotel-lobby.org", "custom_domain": true }]
+  "routes": [{ "pattern": "opus55video.net", "custom_domain": true }]
 }

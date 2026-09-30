@@ -697,3 +697,35 @@ export type InviteCode = typeof inviteCode.$inferSelect;
 export type NewInviteCode = typeof inviteCode.$inferInsert;
 export type UserInvite = typeof userInvite.$inferSelect;
 export type NewUserInvite = typeof userInvite.$inferInsert;
+
+// ─── Public video generation ────────────────────────────────────────────────
+
+export const publicVideoTask = table(
+  'public_video_task',
+  {
+    id: text('id').primaryKey(),
+    visitorHash: text('visitor_hash').notNull(),
+    ipHash: text('ip_hash').notNull(),
+    prompt: text('prompt').notNull(),
+    aspectRatio: text('aspect_ratio').notNull(),
+    duration: text('duration').notNull(),
+    status: text('status').notNull(),
+    providerTaskId: text('provider_task_id'),
+    videoUrl: text('video_url'),
+    error: text('error'),
+    createdAt: integer('created_at', { mode: 'timestamp_ms' })
+      .default(sqliteNowMs)
+      .notNull(),
+    updatedAt: integer('updated_at', { mode: 'timestamp_ms' })
+      .default(sqliteNowMs)
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (t) => [
+    index('idx_public_video_visitor_created').on(t.visitorHash, t.createdAt),
+    index('idx_public_video_ip_created').on(t.ipHash, t.createdAt),
+    index('idx_public_video_created').on(t.createdAt),
+  ]
+);
+
+export type PublicVideoTask = typeof publicVideoTask.$inferSelect;

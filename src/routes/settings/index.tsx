@@ -1,8 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { Activity, CreditCard, Key, TrendingUp } from 'lucide-react';
+import {
+  Activity,
+  ArrowUpRight,
+  CreditCard,
+  Key,
+  TrendingUp,
+} from 'lucide-react';
 
 import { useSession } from '@/core/auth/client';
+import { Link } from '@/core/i18n/navigation';
 import { apiGet } from '@/lib/api-client';
 import { m } from '@/paraglide/messages.js';
 import {
@@ -46,8 +53,8 @@ function DashboardPage() {
     m['settings.overview.plan_free']();
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div>
+    <div className="opus-overview space-y-6 p-4 md:p-8">
+      <div className="opus-overview-heading">
         <h1 className="text-2xl font-semibold tracking-tight">
           {m['settings.title']()}
         </h1>
@@ -58,7 +65,7 @@ function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="opus-overview-metrics grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">
@@ -120,19 +127,17 @@ function DashboardPage() {
         </Card>
       </div>
 
-      <Card>
+      <Card className="opus-overview-feature">
         <CardHeader>
           <CardTitle className="text-base">
-            {m['settings.overview.getting_started']()}
+            {m['settings.nav.video']()}
           </CardTitle>
-          <CardDescription>
-            {m['settings.overview.getting_started_description']()}
-          </CardDescription>
+          <CardDescription>{m['studio.description']()}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="border-border text-muted-foreground rounded-lg border border-dashed p-8 text-center">
-            <p className="text-sm">{m['settings.placeholder']()}</p>
-          </div>
+          <Link href="/create" className="opus-overview-feature-link">
+            {m['opus.nav.create']()} <ArrowUpRight size={18} />
+          </Link>
         </CardContent>
       </Card>
     </div>

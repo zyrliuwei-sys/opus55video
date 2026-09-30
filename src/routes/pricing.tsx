@@ -28,7 +28,7 @@ export const Route = createFileRoute('/pricing')({
 
 function PricingPage() {
   return (
-    <div className="bg-background text-foreground flex min-h-screen flex-col">
+    <div className="opus-pricing bg-background text-foreground flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
         <Pricing />

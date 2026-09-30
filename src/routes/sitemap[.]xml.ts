@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { envConfigs } from '@/config';
 import { baseLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
 
-const STATIC_PATHS = ['', '/privacy-policy', '/terms-of-service'];
+const STATIC_PATHS = ['', '/create', '/privacy-policy', '/terms-of-service'];
 
 type Entry = {
   path: string;

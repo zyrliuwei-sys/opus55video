@@ -101,8 +101,10 @@ All admin pages include:
 
 ## Cloudflare deployment
 
-The `hotel-lobby-ai` Worker builds and deploys automatically when `main` is
-pushed. Cloudflare Workers Builds runs `pnpm cf:ci:build`, then
+The `opus55video` Worker is configured for `opus55video.net`. Before enabling
+automatic deployment, create a fresh D1 database and replace
+`REPLACE_WITH_NEW_D1_DATABASE_ID` in `wrangler.production.json`. Cloudflare
+Workers Builds then runs `pnpm cf:ci:build` followed by
 `pnpm exec wrangler deploy`.
 
 [`wrangler.production.json`](./wrangler.production.json) is the tracked source

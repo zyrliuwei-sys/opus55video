@@ -133,7 +133,7 @@ export function AppLayout({
   }
 
   return (
-    <SidebarProvider>
+    <SidebarProvider className="opus-app-shell">
       <AppSidebar
         brand={brand}
         brandHref={brandHref}
@@ -152,7 +152,7 @@ export function AppLayout({
           otherwise wide tables stretch the page and force horizontal scroll
           instead of scrolling inside their own overflow-x-auto wrappers */}
       <SidebarInset className="min-w-0">
-        <header className="flex h-14 shrink-0 items-center gap-2">
+        <header className="opus-app-header flex h-14 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
           </div>
