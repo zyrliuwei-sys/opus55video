@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { ArrowRight, ArrowUpRight, Menu, X } from 'lucide-react';
+import { ArrowUpRight, Menu, X } from 'lucide-react';
 
-import { Link } from '@/core/i18n/navigation';
+import { Link, useRouter } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
 import { m } from '@/paraglide/messages.js';
 import { LocaleSelector } from '@/components/locale-selector';
@@ -63,6 +63,9 @@ function Header() {
 }
 
 function Hero() {
+  const [prompt, setPrompt] = useState('');
+  const router = useRouter();
+
   return (
     <section id="explore" className="opus-hero">
       <div className="opus-hero-image">
@@ -79,14 +82,33 @@ function Hero() {
         <p className="opus-eyebrow">{m['opus.hero.kicker']()}</p>
         <h1>{m['opus.hero.title']()}</h1>
         <p className="opus-hero-description">{m['opus.hero.description']()}</p>
-        <div className="opus-hero-actions">
-          <Link href="/create" className="opus-button opus-button-primary">
-            {m['opus.hero.primary']()} <ArrowUpRight size={20} />
-          </Link>
-          <a href="#tools" className="opus-button opus-button-outline">
-            {m['opus.hero.secondary']()} <ArrowRight size={18} />
-          </a>
-        </div>
+        <form
+          className="opus-hero-prompt"
+          onSubmit={(event) => {
+            event.preventDefault();
+            router.push(`/create?prompt=${encodeURIComponent(prompt.trim())}`);
+          }}
+        >
+          <label
+            htmlFor="opus-hero-prompt-input"
+            className="opus-hero-prompt-label"
+          >
+            {m['opus.hero.prompt_label']()}
+          </label>
+          <input
+            id="opus-hero-prompt-input"
+            type="text"
+            maxLength={2500}
+            autoComplete="off"
+            value={prompt}
+            onChange={(event) => setPrompt(event.target.value)}
+            placeholder={m['opus.hero.prompt_placeholder']()}
+          />
+          <button type="submit" className="opus-button opus-button-primary">
+            {m['opus.hero.prompt_cta']()} <ArrowUpRight size={20} />
+          </button>
+        </form>
+        <p className="opus-hero-hint">{m['opus.hero.prompt_hint']()}</p>
       </div>
     </section>
   );
@@ -145,16 +167,22 @@ function Showcase() {
       src: assets.train,
       title: m['opus.showcase.one'](),
       className: 'opus-scene-train',
+      width: 1448,
+      height: 1086,
     },
     {
       src: assets.dancer,
       title: m['opus.showcase.two'](),
       className: 'opus-scene-dancer',
+      width: 886,
+      height: 665,
     },
     {
       src: assets.hero,
       title: m['opus.showcase.three'](),
       className: 'opus-scene-eclipse',
+      width: 1672,
+      height: 941,
     },
   ];
   return (
@@ -168,7 +196,13 @@ function Showcase() {
       <div className="opus-scenes">
         {frames.map((frame) => (
           <div key={frame.title} className={`opus-scene ${frame.className}`}>
-            <img src={frame.src} alt={frame.title} loading="lazy" />
+            <img
+              src={frame.src}
+              alt={frame.title}
+              width={frame.width}
+              height={frame.height}
+              loading="lazy"
+            />
             <div className="opus-scene-overlay">
               <h3>{frame.title}</h3>
             </div>
@@ -245,6 +279,10 @@ function Story() {
       question: m['opus.story.faq.four.question'](),
       answer: m['opus.story.faq.four.answer'](),
     },
+    {
+      question: m['opus.story.faq.five.question'](),
+      answer: m['opus.story.faq.five.answer'](),
+    },
   ];
 
   return (
@@ -260,6 +298,7 @@ function Story() {
             <p>{m['opus.story.intro.two']()}</p>
             <p>{m['opus.story.intro.three']()}</p>
           </div>
+          <p className="opus-story-note">{m['opus.story.intro.four']()}</p>
         </div>
       </div>
 

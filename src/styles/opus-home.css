@@ -1507,3 +1507,76 @@
     font-size: 16px;
   }
 }
+
+/* The hero takes the prompt directly: landing page and studio are one flow. */
+.opus-hero-prompt {
+  display: flex;
+  gap: 10px;
+  width: min(560px, 100%);
+  margin-top: 30px;
+}
+.opus-hero-prompt-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.opus-hero-prompt input {
+  flex: 1;
+  min-width: 0;
+  height: 51px;
+  padding: 0 16px;
+  border: 1px solid #e6d8c777;
+  border-radius: 3px;
+  background: #211d19cc;
+  color: var(--opus-white);
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+.opus-hero-prompt input::placeholder {
+  color: #9c9184;
+}
+.opus-hero-prompt input:focus {
+  outline: none;
+  border-color: var(--opus-lime);
+}
+.opus-hero-prompt .opus-button {
+  min-width: 0;
+  flex: none;
+}
+.opus-hero-hint {
+  margin-top: 14px !important;
+  color: #b1a89d;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+.opus-story-note {
+  margin-top: 26px;
+  padding-top: 24px;
+  border-top: 1px solid #38322c;
+}
+@media (max-width: 760px) {
+  .opus-hero-prompt {
+    width: 100%;
+    margin-top: 26px;
+  }
+  .opus-hero-prompt .opus-button {
+    padding: 0 16px;
+    gap: 6px;
+    font-size: 12px;
+  }
+  .opus-hero-hint {
+    margin-top: 12px !important;
+  }
+}
+@media (max-width: 520px) {
+  .opus-hero-prompt {
+    flex-direction: column;
+  }
+  .opus-hero-prompt .opus-button {
+    width: 100%;
+  }
+}

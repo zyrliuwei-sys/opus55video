@@ -43,6 +43,7 @@ const schema = z.object({
 });
 
 function VideoStudioPage() {
+  const { prompt: initialPrompt } = Route.useSearch();
   const queryClient = useQueryClient();
   const query = useQuery({
     queryKey: ['public-video-studio'],
@@ -65,7 +66,7 @@ function VideoStudioPage() {
   });
   const form = useForm({
     defaultValues: {
-      prompt: '',
+      prompt: initialPrompt,
       aspectRatio: '16:9',
       duration: '5',
     } as z.infer<typeof schema>,
@@ -371,6 +372,10 @@ function VideoStudioPage() {
 }
 
 export const Route = createFileRoute('/create')({
+  validateSearch: (search: Record<string, unknown>): { prompt: string } => ({
+    prompt:
+      typeof search.prompt === 'string' ? search.prompt.slice(0, 2500) : '',
+  }),
   loader: () => ({ locale: getLocale() }),
   head: ({ loaderData }) => {
     const locale = loaderData?.locale ?? 'en';
