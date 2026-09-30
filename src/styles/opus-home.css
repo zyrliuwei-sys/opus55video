@@ -97,9 +97,6 @@
   align-items: center;
   gap: 12px;
 }
-.opus-header-actions > button:first-child {
-  color: var(--opus-white);
-}
 .opus-header-cta {
   display: inline-flex;
   align-items: center;
@@ -839,9 +836,6 @@
   }
   .opus-brand {
     font-size: 17px;
-  }
-  .opus-header-actions > button:first-child {
-    display: none;
   }
   .opus-header-cta {
     font-size: 11px;

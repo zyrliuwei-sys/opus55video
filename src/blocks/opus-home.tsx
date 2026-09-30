@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 
+import { useSession } from '@/core/auth/client';
 import { Link, useRouter } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
 import { m } from '@/paraglide/messages.js';
-import { LocaleSelector } from '@/components/locale-selector';
 import { SiteFooter, type FooterColumn } from '@/components/site-footer';
+import { SiteUserMenu } from '@/components/site-user-menu';
 
 import '@/styles/opus-home.css';
 
@@ -17,6 +18,8 @@ const assets = {
 
 function Header() {
   const [open, setOpen] = useState(false);
+  const { data: session } = useSession();
+  const user = session?.user;
 
   return (
     <>
@@ -40,10 +43,17 @@ function Header() {
           </a>
         </nav>
         <div className="opus-header-actions">
-          <LocaleSelector />
-          <Link href="/sign-in" className="opus-login">
-            {m['opus.nav.signin']()}
-          </Link>
+          {user ? (
+            <SiteUserMenu
+              name={user.name || 'User'}
+              email={user.email}
+              image={user.image}
+            />
+          ) : (
+            <Link href="/sign-in" className="opus-login">
+              {m['opus.nav.signin']()}
+            </Link>
+          )}
           <Link href="/create" className="opus-header-cta">
             {m['opus.nav.start']()} <ArrowUpRight size={16} />
           </Link>
