@@ -1627,3 +1627,18 @@
     animation: none;
   }
 }
+
+/* Pricing section reuses the /pricing block; restore the spacing the
+   homepage's p/h reset removes. */
+.opus-home #pricing {
+  scroll-margin-top: 76px;
+}
+.opus-home #pricing h2 + p {
+  margin-top: 20px;
+}
+.opus-home #pricing p.mb-2 {
+  margin-bottom: 0.5rem;
+}
+.opus-home #pricing p.mb-8 {
+  margin-bottom: 2rem;
+}

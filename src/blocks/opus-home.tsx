@@ -5,6 +5,7 @@ import { useSession } from '@/core/auth/client';
 import { Link, useRouter } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
 import { m } from '@/paraglide/messages.js';
+import { Pricing } from '@/blocks/pricing';
 import { SiteFooter, type FooterColumn } from '@/components/site-footer';
 import { SiteUserMenu } from '@/components/site-user-menu';
 
@@ -40,6 +41,9 @@ function Header() {
           </a>
           <a href="#workflow" onClick={() => setOpen(false)}>
             {m['opus.nav.workflow']()}
+          </a>
+          <a href="#pricing" onClick={() => setOpen(false)}>
+            {m['opus.nav.pricing']()}
           </a>
         </nav>
         <div className="opus-header-actions">
@@ -386,6 +390,7 @@ function Footer() {
       links: [
         { label: m['opus.nav.explore'](), href: '/#explore' },
         { label: m['opus.nav.workflow'](), href: '/#workflow' },
+        { label: m['opus.nav.pricing'](), href: '/pricing' },
       ],
     },
     {
@@ -417,6 +422,9 @@ export function OpusHome() {
         <Showcase />
         <Workflow />
         <Story />
+        <div className="opus-pricing dark">
+          <Pricing />
+        </div>
         <CTA />
       </main>
       <Footer />

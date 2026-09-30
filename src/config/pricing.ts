@@ -30,119 +30,97 @@ export type PricingProduct = {
 };
 
 /**
- * Default demo catalog. Replace with your real products when launching.
- * Keys MUST match what the pricing UI sends as product_id.
+ * Site credits use EvoLink's unit: 1 credit = ¥0.1 ≈ $0.0147, so $1 ≈ 68.
+ * One-time packs sell at exactly that rate; subscriptions add a bonus.
  */
-export const pricingCatalog: Record<string, PricingProduct> = {
-  starter_monthly: {
-    productId: 'starter_monthly',
-    productName: 'Starter',
-    planName: 'Starter',
-    description: 'Starter Monthly',
-    type: PaymentType.SUBSCRIPTION,
-    priceInCents: 900,
-    currency: 'usd',
-    credits: 5000,
-    plan: {
-      name: 'Starter',
-      interval: PaymentInterval.MONTH,
-      intervalCount: 1,
-    },
+export const CREDITS_PER_USD = 68;
+
+export type PricingTier = 'starter' | 'pro' | 'studio';
+export type PricingCycle = 'onetime' | 'monthly' | 'yearly';
+
+export const PRICING_TIERS: PricingTier[] = ['starter', 'pro', 'studio'];
+export const PRICING_CYCLES: PricingCycle[] = ['onetime', 'monthly', 'yearly'];
+
+const TIER_NAMES: Record<PricingTier, string> = {
+  starter: 'Starter',
+  pro: 'Pro',
+  studio: 'Studio',
+};
+
+/** Price in USD cents and credits granted, per tier and billing cycle. */
+const TIER_PRICES: Record<
+  PricingTier,
+  Record<PricingCycle, { priceInCents: number; credits: number }>
+> = {
+  // One-time: exact EvoLink rate, credits never expire.
+  // Monthly: ~10% bonus credits. Yearly: pay 10 months, get 12 months.
+  starter: {
+    onetime: { priceInCents: 1000, credits: 680 },
+    monthly: { priceInCents: 1000, credits: 750 },
+    yearly: { priceInCents: 10000, credits: 9000 },
   },
-  pro_monthly: {
-    productId: 'pro_monthly',
-    productName: 'Pro',
-    planName: 'Pro',
-    description: 'Pro Monthly',
-    type: PaymentType.SUBSCRIPTION,
-    priceInCents: 2900,
-    currency: 'usd',
-    credits: 50000,
-    plan: { name: 'Pro', interval: PaymentInterval.MONTH, intervalCount: 1 },
+  pro: {
+    onetime: { priceInCents: 3000, credits: 2040 },
+    monthly: { priceInCents: 3000, credits: 2250 },
+    yearly: { priceInCents: 30000, credits: 27000 },
   },
-  enterprise_monthly: {
-    productId: 'enterprise_monthly',
-    productName: 'Enterprise',
-    planName: 'Enterprise',
-    description: 'Enterprise Monthly',
-    type: PaymentType.SUBSCRIPTION,
-    priceInCents: 9900,
-    currency: 'usd',
-    credits: 500000,
-    plan: {
-      name: 'Enterprise',
-      interval: PaymentInterval.MONTH,
-      intervalCount: 1,
-    },
-  },
-  starter_yearly: {
-    productId: 'starter_yearly',
-    productName: 'Starter',
-    planName: 'Starter',
-    description: 'Starter Yearly',
-    type: PaymentType.SUBSCRIPTION,
-    priceInCents: 8600,
-    currency: 'usd',
-    credits: 60000,
-    plan: { name: 'Starter', interval: PaymentInterval.YEAR, intervalCount: 1 },
-  },
-  pro_yearly: {
-    productId: 'pro_yearly',
-    productName: 'Pro',
-    planName: 'Pro',
-    description: 'Pro Yearly',
-    type: PaymentType.SUBSCRIPTION,
-    priceInCents: 27800,
-    currency: 'usd',
-    credits: 600000,
-    plan: { name: 'Pro', interval: PaymentInterval.YEAR, intervalCount: 1 },
-  },
-  enterprise_yearly: {
-    productId: 'enterprise_yearly',
-    productName: 'Enterprise',
-    planName: 'Enterprise',
-    description: 'Enterprise Yearly',
-    type: PaymentType.SUBSCRIPTION,
-    priceInCents: 95000,
-    currency: 'usd',
-    credits: 6000000,
-    plan: {
-      name: 'Enterprise',
-      interval: PaymentInterval.YEAR,
-      intervalCount: 1,
-    },
-  },
-  starter_lifetime: {
-    productId: 'starter_lifetime',
-    productName: 'Starter',
-    planName: 'Starter Lifetime',
-    description: 'Starter Lifetime',
-    type: PaymentType.ONE_TIME,
-    priceInCents: 14900,
-    currency: 'usd',
-    credits: 100000,
-  },
-  pro_lifetime: {
-    productId: 'pro_lifetime',
-    productName: 'Pro',
-    planName: 'Pro Lifetime',
-    description: 'Pro Lifetime',
-    type: PaymentType.ONE_TIME,
-    priceInCents: 49900,
-    currency: 'usd',
-    credits: 1000000,
-  },
-  enterprise_lifetime: {
-    productId: 'enterprise_lifetime',
-    productName: 'Enterprise',
-    planName: 'Enterprise Lifetime',
-    description: 'Enterprise Lifetime',
-    type: PaymentType.ONE_TIME,
-    priceInCents: 199900,
-    currency: 'usd',
-    credits: 10000000,
+  studio: {
+    onetime: { priceInCents: 10000, credits: 6800 },
+    monthly: { priceInCents: 10000, credits: 7500 },
+    yearly: { priceInCents: 100000, credits: 90000 },
   },
 };
+
+export function pricingProductId(tier: PricingTier, cycle: PricingCycle) {
+  return `${tier}_${cycle}`;
+}
+
+function buildProduct(tier: PricingTier, cycle: PricingCycle): PricingProduct {
+  const name = TIER_NAMES[tier];
+  const { priceInCents, credits } = TIER_PRICES[tier][cycle];
+  const productId = pricingProductId(tier, cycle);
+  if (cycle === 'onetime') {
+    return {
+      productId,
+      productName: name,
+      planName: `${name} Pack`,
+      description: `${name} credit pack`,
+      type: PaymentType.ONE_TIME,
+      priceInCents,
+      currency: 'usd',
+      credits,
+    };
+  }
+  const yearly = cycle === 'yearly';
+  return {
+    productId,
+    productName: name,
+    planName: name,
+    description: `${name} ${yearly ? 'Yearly' : 'Monthly'}`,
+    type: PaymentType.SUBSCRIPTION,
+    priceInCents,
+    currency: 'usd',
+    credits,
+    // Subscription credits expire at the end of the billing period.
+    creditsValidDays: yearly ? 365 : 30,
+    plan: {
+      name,
+      interval: yearly ? PaymentInterval.YEAR : PaymentInterval.MONTH,
+      intervalCount: 1,
+    },
+  };
+}
+
+/** Keys MUST match what the pricing UI sends as product_id. */
+export const pricingCatalog: Record<string, PricingProduct> =
+  Object.fromEntries(
+    PRICING_TIERS.flatMap((tier) =>
+      PRICING_CYCLES.map((cycle) => [
+        pricingProductId(tier, cycle),
+        buildProduct(tier, cycle),
+      ])
+    )
+  );
 
 export function getPricingProduct(productId: string): PricingProduct | null {
   if (!productId) return null;

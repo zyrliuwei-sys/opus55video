@@ -2,25 +2,23 @@
 
 import { useMemo, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import {
-  Check,
-  Folder,
-  Folders,
-  Headphones,
-  Infinity as InfinityIcon,
-  Mail,
-  Puzzle,
-  Sparkles,
-  Terminal,
-  Zap,
-} from 'lucide-react';
+import { CalendarClock, Coins, Image, RotateCcw, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { useSession } from '@/core/auth/client';
 import { useRouter } from '@/core/i18n/navigation';
+import { imageCreditCost } from '@/config/image-generation';
+import {
+  PRICING_TIERS,
+  pricingCatalog,
+  pricingProductId,
+  type PricingCycle,
+  type PricingTier,
+} from '@/config/pricing';
 import { apiPost } from '@/lib/api-client';
 import { currentPathWithQuery } from '@/lib/redirect';
 import { m } from '@/paraglide/messages.js';
+import { getLocale } from '@/paraglide/runtime.js';
 import { usePublicConfig } from '@/hooks/use-public-config';
 import {
   PaymentProviderModal,
@@ -31,6 +29,108 @@ import {
   type PricingGroup,
   type PricingPlan,
 } from '@/components/pricing-table';
+
+const TIER_COPY: Record<
+  PricingTier,
+  { name: () => string; desc: () => string }
+> = {
+  starter: {
+    name: () => m['landing.pricing.tier.starter'](),
+    desc: () => m['landing.pricing.tier.starter_desc'](),
+  },
+  pro: {
+    name: () => m['landing.pricing.tier.pro'](),
+    desc: () => m['landing.pricing.tier.pro_desc'](),
+  },
+  studio: {
+    name: () => m['landing.pricing.tier.studio'](),
+    desc: () => m['landing.pricing.tier.studio_desc'](),
+  },
+};
+
+const CYCLE_FEATURE: Record<PricingCycle, () => string> = {
+  onetime: () => m['landing.pricing.f_never_expire'](),
+  monthly: () => m['landing.pricing.f_monthly'](),
+  yearly: () => m['landing.pricing.f_yearly'](),
+};
+
+function formatUsd(cents: number) {
+  return `$${(cents / 100).toLocaleString('en-US', {
+    maximumFractionDigits: cents % 100 ? 2 : 0,
+  })}`;
+}
+
+/** Turn a catalog product into a card; prices and credits come from the catalog. */
+function buildPlan(tier: PricingTier, cycle: PricingCycle): PricingPlan {
+  const product = pricingCatalog[pricingProductId(tier, cycle)];
+  const format = (n: number) => n.toLocaleString(getLocale());
+  const monthly = pricingCatalog[pricingProductId(tier, 'monthly')];
+  return {
+    id: `${tier}-${cycle}`,
+    name: TIER_COPY[tier].name(),
+    description: TIER_COPY[tier].desc(),
+    // Yearly plans show the monthly equivalent, rounded to whole dollars.
+    price:
+      cycle === 'yearly'
+        ? formatUsd(Math.round(product.priceInCents / 12 / 100) * 100)
+        : formatUsd(product.priceInCents),
+    originalPrice:
+      cycle === 'yearly' ? formatUsd(monthly.priceInCents) : undefined,
+    priceNote:
+      cycle === 'yearly'
+        ? m['landing.pricing.billed_yearly']({
+            price: formatUsd(product.priceInCents),
+          })
+        : undefined,
+    interval:
+      cycle === 'onetime' ? undefined : m['landing.pricing.per_month'](),
+    featured: tier === 'pro',
+    badge: tier === 'pro' ? m['landing.pricing.popular']() : undefined,
+    features: [
+      {
+        icon: Coins,
+        label: m['landing.pricing.f_credits']({
+          credits: format(product.credits),
+        }),
+      },
+      {
+        icon: Image,
+        label: m['landing.pricing.f_standard_images']({
+          count: format(
+            Math.floor(product.credits / imageCreditCost('medium', '1K'))
+          ),
+        }),
+      },
+      {
+        icon: Sparkles,
+        label: m['landing.pricing.f_hd_images']({
+          count: format(
+            Math.floor(product.credits / imageCreditCost('high', '2K'))
+          ),
+        }),
+      },
+      { icon: CalendarClock, label: CYCLE_FEATURE[cycle]() },
+      { icon: RotateCcw, label: m['landing.pricing.f_refund']() },
+    ],
+    buttonText:
+      cycle === 'onetime'
+        ? m['landing.pricing.buy_pack']()
+        : m['landing.pricing.subscribe'](),
+    productId: product.productId,
+    productName: product.productName,
+    priceInCents: product.priceInCents,
+    currency: product.currency,
+    credits: product.credits,
+    creditsValidDays: product.creditsValidDays,
+    plan: product.plan
+      ? {
+          name: product.plan.name,
+          interval: product.plan.interval,
+          intervalCount: product.plan.intervalCount,
+        }
+      : undefined,
+  };
+}
 
 const ALL_PROVIDERS: PaymentProvider[] = [
   'stripe',
@@ -56,173 +156,15 @@ export function Pricing({ title }: { title?: string } = {}) {
     [configs]
   );
 
-  const starterFeatures = [
-    { icon: Folder, label: m['landing.pricing.feature_1_project']() },
-    { icon: Sparkles, label: m['landing.pricing.feature_5k_credits']() },
-    { icon: Mail, label: m['landing.pricing.feature_email_support']() },
-  ];
-  const proFeatures = [
-    { icon: Folders, label: m['landing.pricing.feature_unlimited_projects']() },
-    { icon: Sparkles, label: m['landing.pricing.feature_50k_credits']() },
-    { icon: Zap, label: m['landing.pricing.feature_priority_support']() },
-    { icon: Terminal, label: m['landing.pricing.feature_api_access']() },
-  ];
-  const enterpriseFeatures = [
-    { icon: Check, label: m['landing.pricing.feature_everything_pro']() },
-    {
-      icon: InfinityIcon,
-      label: m['landing.pricing.feature_unlimited_credits'](),
-    },
-    {
-      icon: Headphones,
-      label: m['landing.pricing.feature_dedicated_support'](),
-    },
-    { icon: Puzzle, label: m['landing.pricing.feature_custom_integrations']() },
-  ];
-
   const groups: PricingGroup[] = [
-    {
-      key: 'monthly',
-      label: m['landing.pricing.monthly'](),
-      plans: [
-        {
-          id: 'starter-monthly',
-          name: m['landing.pricing.starter'](),
-          description: m['landing.pricing.starter_desc'](),
-          price: '$9',
-          interval: 'mo',
-          features: starterFeatures,
-          productId: 'starter_monthly',
-          priceInCents: 900,
-          currency: 'usd',
-          credits: 5000,
-          plan: { name: 'Starter', interval: 'month', intervalCount: 1 },
-        },
-        {
-          id: 'pro-monthly',
-          name: m['landing.pricing.pro'](),
-          description: m['landing.pricing.pro_desc'](),
-          price: '$29',
-          interval: 'mo',
-          featured: true,
-          badge: m['landing.pricing.popular'](),
-          features: proFeatures,
-          productId: 'pro_monthly',
-          priceInCents: 2900,
-          currency: 'usd',
-          credits: 50000,
-          plan: { name: 'Pro', interval: 'month', intervalCount: 1 },
-        },
-        {
-          id: 'enterprise-monthly',
-          name: m['landing.pricing.enterprise'](),
-          description: m['landing.pricing.enterprise_desc'](),
-          price: '$99',
-          interval: 'mo',
-          features: enterpriseFeatures,
-          productId: 'enterprise_monthly',
-          priceInCents: 9900,
-          currency: 'usd',
-          credits: 500000,
-          plan: { name: 'Enterprise', interval: 'month', intervalCount: 1 },
-        },
-      ],
-    },
-    {
-      key: 'yearly',
-      label: m['landing.pricing.yearly'](),
-      plans: [
-        {
-          id: 'starter-yearly',
-          name: m['landing.pricing.starter'](),
-          description: m['landing.pricing.starter_desc'](),
-          price: '$86',
-          originalPrice: '$108',
-          interval: 'yr',
-          features: starterFeatures,
-          productId: 'starter_yearly',
-          priceInCents: 8600,
-          currency: 'usd',
-          credits: 60000,
-          plan: { name: 'Starter', interval: 'year', intervalCount: 1 },
-        },
-        {
-          id: 'pro-yearly',
-          name: m['landing.pricing.pro'](),
-          description: m['landing.pricing.pro_desc'](),
-          price: '$278',
-          originalPrice: '$348',
-          interval: 'yr',
-          featured: true,
-          badge: m['landing.pricing.popular'](),
-          features: proFeatures,
-          productId: 'pro_yearly',
-          priceInCents: 27800,
-          currency: 'usd',
-          credits: 600000,
-          plan: { name: 'Pro', interval: 'year', intervalCount: 1 },
-        },
-        {
-          id: 'enterprise-yearly',
-          name: m['landing.pricing.enterprise'](),
-          description: m['landing.pricing.enterprise_desc'](),
-          price: '$950',
-          originalPrice: '$1,188',
-          interval: 'yr',
-          features: enterpriseFeatures,
-          productId: 'enterprise_yearly',
-          priceInCents: 95000,
-          currency: 'usd',
-          credits: 6000000,
-          plan: { name: 'Enterprise', interval: 'year', intervalCount: 1 },
-        },
-      ],
-    },
-    {
-      key: 'lifetime',
-      label: m['landing.pricing.lifetime'](),
-      plans: [
-        {
-          id: 'starter-lifetime',
-          name: m['landing.pricing.starter'](),
-          description: m['landing.pricing.starter_desc'](),
-          price: '$149',
-          features: starterFeatures,
-          productId: 'starter_lifetime',
-          priceInCents: 14900,
-          currency: 'usd',
-          credits: 100000,
-          buttonText: m['landing.pricing.buy_lifetime'](),
-        },
-        {
-          id: 'pro-lifetime',
-          name: m['landing.pricing.pro'](),
-          description: m['landing.pricing.pro_desc'](),
-          price: '$499',
-          features: proFeatures,
-          featured: true,
-          badge: m['landing.pricing.best_value'](),
-          productId: 'pro_lifetime',
-          priceInCents: 49900,
-          currency: 'usd',
-          credits: 1000000,
-          buttonText: m['landing.pricing.buy_lifetime'](),
-        },
-        {
-          id: 'enterprise-lifetime',
-          name: m['landing.pricing.enterprise'](),
-          description: m['landing.pricing.enterprise_desc'](),
-          price: '$1,999',
-          features: enterpriseFeatures,
-          productId: 'enterprise_lifetime',
-          priceInCents: 199900,
-          currency: 'usd',
-          credits: 10000000,
-          buttonText: m['landing.pricing.buy_lifetime'](),
-        },
-      ],
-    },
-  ];
+    { key: 'onetime', label: m['landing.pricing.onetime']() },
+    { key: 'monthly', label: m['landing.pricing.monthly']() },
+    { key: 'yearly', label: m['landing.pricing.yearly']() },
+  ].map(({ key, label }) => ({
+    key,
+    label,
+    plans: PRICING_TIERS.map((tier) => buildPlan(tier, key as PricingCycle)),
+  }));
 
   const checkoutMutation = useMutation({
     mutationFn: ({
@@ -322,7 +264,11 @@ export function Pricing({ title }: { title?: string } = {}) {
         loadingProvider={loadingProvider}
         onSelect={handleProviderSelect}
         planName={pendingPlan?.name}
-        price={pendingPlan?.price}
+        price={
+          pendingPlan?.priceInCents != null
+            ? formatUsd(pendingPlan.priceInCents)
+            : pendingPlan?.price
+        }
       />
     </section>
   );

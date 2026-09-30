@@ -77,9 +77,16 @@ async function testEvolink(
   if (missing) return { success: false, message: missing };
 
   // Listing models is free and proves the key is valid.
-  const baseUrl = (
-    configs.evolink_base_url || 'https://direct.evolink.ai/v1'
-  ).replace(/\\/+$/, '');
+  // The marketing site (evolink.ai) isn't the API; a bare host needs /v1.
+  let baseUrl = 'https://direct.evolink.ai/v1';
+  try {
+    const url = new URL(configs.evolink_base_url?.trim() || baseUrl);
+    if (!/^(www\\.)?evolink\\.ai$/.test(url.hostname)) {
+      baseUrl = url.origin + (url.pathname.replace(/\\/+$/, '') || '/v1');
+    }
+  } catch {
+    // Keep the default.
+  }
   const resp = await fetch(\`\${baseUrl}/models\`, {
     headers: { Authorization: \`Bearer \${configs.evolink_api_key}\` },
   });

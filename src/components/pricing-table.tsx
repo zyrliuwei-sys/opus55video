@@ -22,6 +22,8 @@ export interface PricingPlan {
   description?: string;
   price: string;
   originalPrice?: string;
+  /** Small line under the price, e.g. "Billed $100 yearly". */
+  priceNote?: string;
   currency?: string;
   interval?: string;
   featured?: boolean;
@@ -164,6 +166,11 @@ export function PricingTable({
             {plan.originalPrice && (
               <span className="text-muted-foreground mb-1 text-sm line-through">
                 {plan.originalPrice}
+              </span>
+            )}
+            {plan.priceNote && (
+              <span className="text-muted-foreground mb-1 text-sm">
+                {plan.priceNote}
               </span>
             )}
 

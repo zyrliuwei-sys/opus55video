@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
 
 import { db } from '@/core/db';
 import { aiTask } from '@/config/db/schema';
@@ -37,6 +37,7 @@ export async function createTask(params: {
       provider,
       model,
       prompt,
+      options: options ? JSON.stringify(options) : null,
       status: AITaskStatus.PENDING,
       costCredits: costCredits || 0,
     };
@@ -110,6 +111,57 @@ export async function updateTask(params: {
       // Ignore parse errors
     }
   }
+}
+
+/**
+ * Record the provider's task id once the upstream request is accepted.
+ */
+export async function markTaskSubmitted(
+  taskId: string,
+  providerTaskId: string
+) {
+  await db()
+    .update(aiTask)
+    .set({ status: AITaskStatus.PROCESSING, taskId: providerTaskId })
+    .where(eq(aiTask.id, taskId));
+}
+
+/**
+ * Move an in-flight task to a final state exactly once. Returns false when the
+ * task was already final (e.g. a concurrent poll settled it first), so credits
+ * are never refunded twice.
+ */
+export async function finishTask(params: {
+  taskId: string;
+  status: AITaskStatus.SUCCESS | AITaskStatus.FAILED;
+  taskResult?: any;
+}): Promise<boolean> {
+  const { taskId, status, taskResult } = params;
+  const updated = await db()
+    .update(aiTask)
+    .set({
+      status,
+      ...(taskResult ? { taskResult: JSON.stringify(taskResult) } : {}),
+    })
+    .where(
+      and(
+        eq(aiTask.id, taskId),
+        inArray(aiTask.status, [AITaskStatus.PENDING, AITaskStatus.PROCESSING])
+      )
+    )
+    .returning({ taskInfo: aiTask.taskInfo });
+
+  if (updated.length === 0) return false;
+
+  if (status === AITaskStatus.FAILED && updated[0].taskInfo) {
+    try {
+      const info = JSON.parse(updated[0].taskInfo as string);
+      if (info.creditId) await revoke(info.creditId);
+    } catch {
+      // Ignore parse errors
+    }
+  }
+  return true;
 }
 
 /**
