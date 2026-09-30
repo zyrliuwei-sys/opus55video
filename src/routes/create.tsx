@@ -28,7 +28,6 @@ import { currentPathWithQuery } from '@/lib/redirect';
 import { cn } from '@/lib/utils';
 import { m } from '@/paraglide/messages.js';
 import { getLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
-import { BuiltWithShipAny } from '@/components/built-with-shipany';
 import { LocaleSelector } from '@/components/locale-selector';
 import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -300,11 +299,6 @@ function ImageStudioPage() {
                   </form.Field>
                 </div>
 
-                {!query.isLoading && !configured && (
-                  <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-300">
-                    {m['studio.image.not_configured']()}
-                  </p>
-                )}
                 {query.isError && (
                   <p className="text-destructive text-sm">
                     {m['studio.load_error']()}
@@ -523,7 +517,6 @@ function ImageStudioPage() {
         <div>
           <Link href="/privacy-policy">{m['opus.footer.privacy']()}</Link>
           <Link href="/terms-of-service">{m['opus.footer.terms']()}</Link>
-          <BuiltWithShipAny />
         </div>
       </footer>
     </div>
