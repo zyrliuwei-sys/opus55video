@@ -66,7 +66,7 @@ function VideoStudioPage() {
   });
   const form = useForm({
     defaultValues: {
-      prompt: initialPrompt,
+      prompt: initialPrompt ?? '',
       aspectRatio: '16:9',
       duration: '5',
     } as z.infer<typeof schema>,
@@ -372,9 +372,12 @@ function VideoStudioPage() {
 }
 
 export const Route = createFileRoute('/create')({
-  validateSearch: (search: Record<string, unknown>): { prompt: string } => ({
-    prompt:
-      typeof search.prompt === 'string' ? search.prompt.slice(0, 2500) : '',
+  validateSearch: (search: Record<string, unknown>): { prompt?: string } => ({
+    // Omit the param entirely when absent/empty so /create stays canonical
+    // instead of 307-redirecting to /create?prompt=.
+    ...(typeof search.prompt === 'string' && search.prompt !== ''
+      ? { prompt: search.prompt.slice(0, 2500) }
+      : {}),
   }),
   loader: () => ({ locale: getLocale() }),
   head: ({ loaderData }) => {
