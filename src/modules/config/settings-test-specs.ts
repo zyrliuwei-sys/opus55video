@@ -229,6 +229,10 @@ export const testSpecs: Record<string, TestSpec> = {
       },
     ],
   },
+  evolink: {
+    group: 'evolink',
+    fields: [],
+  },
 };
 
 export function getTestSpec(group: string): TestSpec | undefined {

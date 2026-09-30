@@ -58,6 +58,8 @@ export async function runTest(
         return await testReplicate(inputs, configs);
       case 'fal':
         return await testFal(inputs, configs);
+      case 'evolink':
+        return await testEvolink(inputs, configs);
       default:
         return { success: false, message: `No test available for "${group}"` };
     }
@@ -498,5 +500,46 @@ async function testFal(
     success: true,
     message: 'Fal accepted the request',
     details: { 'Task ID': result.taskId, Status: result.taskStatus },
+  };
+}
+
+// --- EvoLink --------------------------------------------------------------
+
+async function testEvolink(
+  _inputs: Record<string, string>,
+  configs: Record<string, string>
+): Promise<TestResult> {
+  const missing = need(configs, ['evolink_api_key']);
+  if (missing) return { success: false, message: missing };
+
+  // Listing models is free and proves the key is valid.
+  const baseUrl = (
+    configs.evolink_base_url || 'https://direct.evolink.ai/v1'
+  ).replace(/\/+$/, '');
+  const resp = await fetch(`${baseUrl}/models`, {
+    headers: { Authorization: `Bearer ${configs.evolink_api_key}` },
+  });
+
+  const data: any = await resp.json().catch(() => ({}));
+  if (!resp.ok) {
+    return {
+      success: false,
+      message: data?.error?.message || `Request failed (${resp.status})`,
+    };
+  }
+
+  const models = Array.isArray(data?.data) ? data.data : [];
+  return {
+    success: true,
+    message: 'EvoLink accepted the API key',
+    details: {
+      'Base URL': baseUrl,
+      Models: String(models.length),
+      Sample: models
+        .slice(0, 5)
+        .map((m: any) => m?.id)
+        .filter(Boolean)
+        .join(', '),
+    },
   };
 }
