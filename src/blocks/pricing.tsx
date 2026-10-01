@@ -2,7 +2,14 @@
 
 import { useMemo, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { CalendarClock, Coins, Image, RotateCcw, Sparkles } from 'lucide-react';
+import {
+  CalendarClock,
+  Clapperboard,
+  Coins,
+  Film,
+  Image,
+  RotateCcw,
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 import { useSession } from '@/core/auth/client';
@@ -15,6 +22,7 @@ import {
   type PricingCycle,
   type PricingTier,
 } from '@/config/pricing';
+import { videoCreditCost } from '@/config/video-generation';
 import { apiPost } from '@/lib/api-client';
 import { currentPathWithQuery } from '@/lib/redirect';
 import { m } from '@/paraglide/messages.js';
@@ -94,18 +102,26 @@ function buildPlan(tier: PricingTier, cycle: PricingCycle): PricingPlan {
         }),
       },
       {
-        icon: Image,
-        label: m['landing.pricing.f_standard_images']({
+        icon: Clapperboard,
+        label: m['landing.pricing.f_videos_720']({
           count: format(
-            Math.floor(product.credits / imageCreditCost('medium', '1K'))
+            Math.floor(product.credits / videoCreditCost('720p', 5))
           ),
         }),
       },
       {
-        icon: Sparkles,
-        label: m['landing.pricing.f_hd_images']({
+        icon: Film,
+        label: m['landing.pricing.f_videos_480']({
           count: format(
-            Math.floor(product.credits / imageCreditCost('high', '2K'))
+            Math.floor(product.credits / videoCreditCost('480p', 5))
+          ),
+        }),
+      },
+      {
+        icon: Image,
+        label: m['landing.pricing.f_standard_images']({
+          count: format(
+            Math.floor(product.credits / imageCreditCost('medium', '1K'))
           ),
         }),
       },

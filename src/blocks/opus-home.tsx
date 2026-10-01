@@ -134,18 +134,22 @@ function Tools() {
     {
       title: m['opus.tools.text.title'](),
       description: m['opus.tools.text.description'](),
+      href: '/create',
     },
     {
       title: m['opus.tools.image.title'](),
       description: m['opus.tools.image.description'](),
+      href: '/create',
     },
     {
       title: m['opus.tools.motion.title'](),
       description: m['opus.tools.motion.description'](),
+      href: '/create',
     },
     {
       title: m['opus.tools.look.title'](),
       description: m['opus.tools.look.description'](),
+      href: '/create#history',
     },
   ];
   return (
@@ -159,7 +163,7 @@ function Tools() {
       </div>
       <div className="opus-tools-grid">
         {tools.map((tool) => (
-          <Link href="/create" key={tool.title} className="opus-tool">
+          <Link href={tool.href} key={tool.title} className="opus-tool">
             <div className="opus-tool-info">
               <div>
                 <h3>{tool.title}</h3>

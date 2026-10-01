@@ -1,6 +1,7 @@
 /**
- * Minimal EvoLink client for async image generation.
+ * Minimal EvoLink client for async image and video generation.
  * Docs: https://evolink.ai/docs/en/api-manual/image-series/gpt-image-2.5/gpt-image-2.5-image-generation
+ *       https://evolink.ai/docs/en/api-manual/video-series/seedance2.0/seedance-2.0-text-to-video
  */
 
 export const EVOLINK_DEFAULT_BASE_URL = 'https://direct.evolink.ai/v1';
@@ -89,6 +90,21 @@ export class EvolinkClient {
     return this.request('/images/generations', {
       method: 'POST',
       body: JSON.stringify({ ...params, n: 1 }),
+    });
+  }
+
+  createVideoTask(params: {
+    model: string;
+    prompt: string;
+    duration: number;
+    quality: string;
+    aspect_ratio: string;
+    generate_audio: boolean;
+    image_urls?: string[];
+  }): Promise<EvolinkTask> {
+    return this.request('/videos/generations', {
+      method: 'POST',
+      body: JSON.stringify(params),
     });
   }
 

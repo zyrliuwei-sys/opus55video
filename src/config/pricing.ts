@@ -30,8 +30,8 @@ export type PricingProduct = {
 };
 
 /**
- * Site credits use EvoLink's unit: 1 credit = ¥0.1 ≈ $0.0147, so $1 ≈ 68.
- * One-time packs sell at exactly that rate; subscriptions add a bonus.
+ * Site credits use EvoLink's unit: 1 credit = ¥0.1 ≈ $0.0147, so $1 ≈ 68
+ * credits at EvoLink's own rate.
  */
 export const CREDITS_PER_USD = 68;
 
@@ -47,27 +47,35 @@ const TIER_NAMES: Record<PricingTier, string> = {
   studio: 'Studio',
 };
 
-/** Price in USD cents and credits granted, per tier and billing cycle. */
+/**
+ * Price in USD cents and credits granted, per tier and billing cycle.
+ *
+ * Generations cost ~7× EvoLink list price (see image-/video-generation.ts);
+ * bigger packs float that down as a volume discount. Effective multiples:
+ * one-time 6.7× / 6.3× / 5.8×, monthly 6.1× / 5.7× / 5.3×,
+ * yearly 5.1× / 4.7× / 4.4×. One-time packs are sized in whole 720p · 5s
+ * clips (473 credits each): 3 / 8 / 22.
+ */
 const TIER_PRICES: Record<
   PricingTier,
   Record<PricingCycle, { priceInCents: number; credits: number }>
 > = {
-  // One-time: exact EvoLink rate, credits never expire.
-  // Monthly: ~10% bonus credits. Yearly: pay 10 months, get 12 months.
+  // One-time: credits never expire.
+  // Monthly: +10% credits. Yearly: monthly credits × 12, pay 10 months.
   starter: {
-    onetime: { priceInCents: 1000, credits: 680 },
-    monthly: { priceInCents: 1000, credits: 750 },
-    yearly: { priceInCents: 10000, credits: 9000 },
+    onetime: { priceInCents: 1990, credits: 1420 },
+    monthly: { priceInCents: 1990, credits: 1560 },
+    yearly: { priceInCents: 19900, credits: 18720 },
   },
   pro: {
-    onetime: { priceInCents: 3000, credits: 2040 },
-    monthly: { priceInCents: 3000, credits: 2250 },
-    yearly: { priceInCents: 30000, credits: 27000 },
+    onetime: { priceInCents: 4990, credits: 3800 },
+    monthly: { priceInCents: 4990, credits: 4180 },
+    yearly: { priceInCents: 49900, credits: 50160 },
   },
   studio: {
-    onetime: { priceInCents: 10000, credits: 6800 },
-    monthly: { priceInCents: 10000, credits: 7500 },
-    yearly: { priceInCents: 100000, credits: 90000 },
+    onetime: { priceInCents: 12900, credits: 10500 },
+    monthly: { priceInCents: 12900, credits: 11550 },
+    yearly: { priceInCents: 129000, credits: 138600 },
   },
 };
 
