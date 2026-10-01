@@ -208,7 +208,10 @@ async function testPaypal(
     clientId: configs.paypal_client_id,
     clientSecret: configs.paypal_client_secret,
     environment:
-      configs.paypal_environment === 'live' ? 'production' : 'sandbox',
+      configs.paypal_environment === 'live' ||
+      configs.paypal_environment === 'production'
+        ? 'production'
+        : 'sandbox',
     webhookId: configs.paypal_webhook_id || undefined,
   });
 
