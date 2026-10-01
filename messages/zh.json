@@ -1019,5 +1019,22 @@
   "studio.image.loading": "正在加载图片……",
   "studio.image.open_image": "查看原图",
   "studio.image.how_description": "先写主体，再写场景、风格和光线。每张图大约需要 30–60 秒。",
-  "studio.image.cost_note": "开始生成时扣除积分，生成失败会自动退还。质量越高、分辨率越大，消耗的积分越多。"
+  "studio.image.cost_note": "开始生成时扣除积分，生成失败会自动退还。质量越高、分辨率越大，消耗的积分越多。",
+  "admin.nav.footer_badges": "页脚徽章",
+  "admin.footer_badges.title": "页脚徽章",
+  "admin.footer_badges.description": "管理网站页脚中展示的徽章链接。",
+  "admin.footer_badges.add_title": "添加徽章",
+  "admin.footer_badges.code_label": "徽章嵌入代码",
+  "admin.footer_badges.code_placeholder": "<a href=\"https://example.com\" target=\"_blank\"><img src=\"https://example.com/badge.svg\" width=250 alt=\"Featured badge\" /></a>",
+  "admin.footer_badges.code_help": "粘贴一个或多个链接/图片徽章代码。仅接受 HTTPS 链接和图片，最多展示 {max} 个徽章。",
+  "admin.footer_badges.invalid_code": "代码格式不支持。请只粘贴包含一个 <img> 的 <a> 标签，并使用 HTTPS 地址。",
+  "admin.footer_badges.add_button": "添加到页脚",
+  "admin.footer_badges.adding": "添加中...",
+  "admin.footer_badges.current_title": "当前展示的徽章",
+  "admin.footer_badges.empty": "还没有添加徽章。",
+  "admin.footer_badges.loading": "正在加载徽章...",
+  "admin.footer_badges.load_error": "无法加载页脚徽章。",
+  "admin.footer_badges.remove": "移除",
+  "admin.footer_badges.saved": "页脚徽章已更新。",
+  "admin.footer_badges.save_error": "无法更新页脚徽章。"
 }

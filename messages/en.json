@@ -1019,5 +1019,22 @@
   "studio.image.loading": "Loading images…",
   "studio.image.open_image": "Open full size",
   "studio.image.how_description": "Lead with the subject, then the setting, style and light. Each image takes about 30–60 seconds.",
-  "studio.image.cost_note": "Credits are charged when a generation starts and refunded automatically if it fails. Higher quality and 2K cost more credits."
+  "studio.image.cost_note": "Credits are charged when a generation starts and refunded automatically if it fails. Higher quality and 2K cost more credits.",
+  "admin.nav.footer_badges": "Footer badges",
+  "admin.footer_badges.title": "Footer badges",
+  "admin.footer_badges.description": "Manage the badge links shown in your site footer.",
+  "admin.footer_badges.add_title": "Add a badge",
+  "admin.footer_badges.code_label": "Badge embed code",
+  "admin.footer_badges.code_placeholder": "<a href=\"https://example.com\" target=\"_blank\"><img src=\"https://example.com/badge.svg\" width=250 alt=\"Featured badge\" /></a>",
+  "admin.footer_badges.code_help": "Paste one or more anchor/image badges. Only HTTPS links and images are accepted; up to {max} badges can be shown.",
+  "admin.footer_badges.invalid_code": "That code is not supported. Paste only an <a> containing one <img> with HTTPS URLs.",
+  "admin.footer_badges.add_button": "Add to footer",
+  "admin.footer_badges.adding": "Adding...",
+  "admin.footer_badges.current_title": "Visible badges",
+  "admin.footer_badges.empty": "No badges have been added yet.",
+  "admin.footer_badges.loading": "Loading badges...",
+  "admin.footer_badges.load_error": "Could not load footer badges.",
+  "admin.footer_badges.remove": "Remove",
+  "admin.footer_badges.saved": "Footer badge updated.",
+  "admin.footer_badges.save_error": "Could not update the footer badge."
 }

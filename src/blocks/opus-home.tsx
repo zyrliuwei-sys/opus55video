@@ -6,6 +6,7 @@ import { Link, useRouter } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
 import { m } from '@/paraglide/messages.js';
 import { Pricing } from '@/blocks/pricing';
+import { FooterBadgeList } from '@/components/footer-badge-list';
 import { SiteFooter, type FooterColumn } from '@/components/site-footer';
 import { SiteUserMenu } from '@/components/site-user-menu';
 
@@ -407,7 +408,11 @@ function Footer() {
   ];
   return (
     <div className="opus-footer">
-      <SiteFooter tagline={m['opus.footer.tagline']()} columns={columns} />
+      <SiteFooter
+        tagline={m['opus.footer.tagline']()}
+        columns={columns}
+        badges={<FooterBadgeList className="mt-8" />}
+      />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { m } from '@/paraglide/messages.js';
+import { FooterBadgeList } from '@/components/footer-badge-list';
 import { SiteFooter, type FooterColumn } from '@/components/site-footer';
 
 export function Footer() {
@@ -28,5 +29,11 @@ export function Footer() {
     },
   ];
 
-  return <SiteFooter tagline={m['opus.footer.tagline']()} columns={columns} />;
+  return (
+    <SiteFooter
+      tagline={m['opus.footer.tagline']()}
+      columns={columns}
+      badges={<FooterBadgeList className="mt-8" />}
+    />
+  );
 }

@@ -1,4 +1,4 @@
-import type { ComponentType, SVGProps } from 'react';
+import type { ComponentType, ReactNode, SVGProps } from 'react';
 
 import { Link } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
@@ -24,11 +24,14 @@ export function SiteFooter({
   columns,
   socials,
   copyright,
+  badges,
 }: {
   tagline?: string;
   columns?: FooterColumn[];
   socials?: FooterSocial[];
   copyright?: string;
+  /** Optional badge row rendered above the bottom bar. */
+  badges?: ReactNode;
 }) {
   const year = new Date().getFullYear();
 
@@ -106,6 +109,8 @@ export function SiteFooter({
             ))}
           </div>
         )}
+
+        {badges}
 
         {/* Bottom bar */}
         <div className="border-border mt-6 flex flex-col gap-3 border-t pt-5 sm:flex-row sm:items-center sm:justify-between">
