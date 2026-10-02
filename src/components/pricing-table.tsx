@@ -28,6 +28,8 @@ export interface PricingPlan {
   interval?: string;
   featured?: boolean;
   badge?: string;
+  /** 'light' renders the card on the light palette so it stands out. */
+  tone?: 'light';
   /** Eye-catching callout under the price, e.g. an upgrade perk. */
   highlight?: { icon?: IconComponent; title: string; text?: string };
   features: PricingFeature[];
@@ -142,8 +144,8 @@ export function PricingTable({
             key={plan.id}
             className={cn(
               'border-border relative flex flex-col rounded-2xl border p-8 transition-all',
-              plan.featured
-                ? 'bg-card ring-foreground/10 shadow-md ring-1'
+              plan.tone === 'light'
+                ? 'light bg-card text-foreground border-transparent'
                 : 'bg-background hover:border-foreground/30'
             )}
           >

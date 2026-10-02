@@ -90,6 +90,7 @@ function buildTrialPlan(): PricingPlan {
     name: () => m['landing.pricing.tier.trial'](),
     desc: () => m['landing.pricing.tier.trial_desc'](),
   });
+  plan.tone = 'light';
   plan.highlight = {
     icon: Gift,
     title: m['landing.pricing.trial_highlight_title'](),
