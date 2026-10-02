@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import {
   CalendarClock,
+  CircleUser,
   Clapperboard,
   Coins,
   Film,
@@ -19,6 +20,7 @@ import {
   PRICING_TIERS,
   pricingCatalog,
   pricingProductId,
+  TRIAL_PRODUCT_ID,
   type PricingCycle,
   type PricingTier,
 } from '@/config/pricing';
@@ -70,13 +72,41 @@ function formatUsd(cents: number) {
 
 /** Turn a catalog product into a card; prices and credits come from the catalog. */
 function buildPlan(tier: PricingTier, cycle: PricingCycle): PricingPlan {
-  const product = pricingCatalog[pricingProductId(tier, cycle)];
+  return planFromProduct(
+    pricingCatalog[pricingProductId(tier, cycle)],
+    cycle,
+    TIER_COPY[tier],
+    tier === 'pro',
+    pricingCatalog[pricingProductId(tier, 'monthly')]
+  );
+}
+
+/** One-per-account entry pack, shown first in the one-time tab. */
+function buildTrialPlan(): PricingPlan {
+  const plan = planFromProduct(pricingCatalog[TRIAL_PRODUCT_ID], 'onetime', {
+    name: () => m['landing.pricing.tier.trial'](),
+    desc: () => m['landing.pricing.tier.trial_desc'](),
+  });
+  plan.features.push({
+    icon: CircleUser,
+    label: m['landing.pricing.f_once_per_account'](),
+  });
+  plan.buttonText = m['landing.pricing.buy_trial']();
+  return plan;
+}
+
+function planFromProduct(
+  product: (typeof pricingCatalog)[string],
+  cycle: PricingCycle,
+  copy: { name: () => string; desc: () => string },
+  featured = false,
+  monthly = product
+): PricingPlan {
   const format = (n: number) => n.toLocaleString(getLocale());
-  const monthly = pricingCatalog[pricingProductId(tier, 'monthly')];
   return {
-    id: `${tier}-${cycle}`,
-    name: TIER_COPY[tier].name(),
-    description: TIER_COPY[tier].desc(),
+    id: product.productId,
+    name: copy.name(),
+    description: copy.desc(),
     // Yearly plans show the monthly equivalent, rounded to whole dollars.
     price:
       cycle === 'yearly'
@@ -92,8 +122,8 @@ function buildPlan(tier: PricingTier, cycle: PricingCycle): PricingPlan {
         : undefined,
     interval:
       cycle === 'onetime' ? undefined : m['landing.pricing.per_month'](),
-    featured: tier === 'pro',
-    badge: tier === 'pro' ? m['landing.pricing.popular']() : undefined,
+    featured,
+    badge: featured ? m['landing.pricing.popular']() : undefined,
     features: [
       {
         icon: Coins,
@@ -179,7 +209,10 @@ export function Pricing({ title }: { title?: string } = {}) {
   ].map(({ key, label }) => ({
     key,
     label,
-    plans: PRICING_TIERS.map((tier) => buildPlan(tier, key as PricingCycle)),
+    plans: [
+      ...(key === 'onetime' ? [buildTrialPlan()] : []),
+      ...PRICING_TIERS.map((tier) => buildPlan(tier, key as PricingCycle)),
+    ],
   }));
 
   const checkoutMutation = useMutation({
@@ -214,7 +247,11 @@ export function Pricing({ title }: { title?: string } = {}) {
       window.location.href = data.checkout_url;
     },
     onError: (err: any) => {
-      toast.error(err?.message || 'Checkout failed');
+      toast.error(
+        err?.message === 'TRIAL_ALREADY_PURCHASED'
+          ? m['landing.pricing.trial_used']()
+          : err?.message || 'Checkout failed'
+      );
       setLoadingProvider(null);
     },
   });
@@ -255,7 +292,7 @@ export function Pricing({ title }: { title?: string } = {}) {
       id="pricing"
       className="border-border border-t px-4 py-24 sm:py-32"
     >
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-6xl">
         <div className="mb-20 text-center">
           <h2 className="font-serif text-4xl font-normal tracking-tight sm:text-5xl">
             {title ?? m['landing.pricing.title']()}

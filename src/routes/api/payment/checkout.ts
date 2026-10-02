@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 import { getAuth } from '@/core/auth';
-import { getPricingProduct } from '@/config/pricing';
+import { getPricingProduct, TRIAL_PRODUCT_ID } from '@/config/pricing';
 import { getAllConfigs } from '@/modules/config/service';
-import { createCheckout } from '@/modules/payment/service';
+import { createCheckout, hasPaidOrder } from '@/modules/payment/service';
 import { enforceMinIntervalRateLimit } from '@/lib/rate-limit';
 import { respData, respErr } from '@/lib/resp';
 
@@ -50,6 +50,14 @@ async function POST({ request }: { request: Request }) {
     const product = getPricingProduct(product_id);
     if (!product) {
       return respErr('Unknown product');
+    }
+
+    // The trial pack is one per account.
+    if (
+      product.productId === TRIAL_PRODUCT_ID &&
+      (await hasPaidOrder(session.user.id, TRIAL_PRODUCT_ID))
+    ) {
+      return respErr('TRIAL_ALREADY_PURCHASED');
     }
 
     // Optional per-provider "test amount" override (admin-configured).

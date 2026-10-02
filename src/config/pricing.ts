@@ -52,8 +52,8 @@ const TIER_NAMES: Record<PricingTier, string> = {
  *
  * Generations cost ~7× EvoLink list price (see image-/video-generation.ts);
  * bigger packs float that down as a volume discount. Effective multiples:
- * one-time 6.7× / 6.3× / 5.8×, monthly 6.1× / 5.7× / 5.3×,
- * yearly 5.1× / 4.7× / 4.4×. One-time packs are sized in whole 720p · 5s
+ * one-time 6.7× / 6.3× / 5.8×, monthly 5.1× / 4.8× / 4.5×,
+ * yearly 4.3× / 4.0× / 3.8×. One-time packs are sized in whole 720p · 5s
  * clips (473 credits each): 3 / 8 / 22.
  */
 const TIER_PRICES: Record<
@@ -61,22 +61,40 @@ const TIER_PRICES: Record<
   Record<PricingCycle, { priceInCents: number; credits: number }>
 > = {
   // One-time: credits never expire.
-  // Monthly: +10% credits. Yearly: monthly credits × 12, pay 10 months.
+  // Monthly: +30% credits over the one-time pack, so subscribing beats
+  // buying the same pack every month. Yearly: monthly credits × 12, pay 10.
   starter: {
     onetime: { priceInCents: 1990, credits: 1420 },
-    monthly: { priceInCents: 1990, credits: 1560 },
-    yearly: { priceInCents: 19900, credits: 18720 },
+    monthly: { priceInCents: 1990, credits: 1850 },
+    yearly: { priceInCents: 19900, credits: 22200 },
   },
   pro: {
     onetime: { priceInCents: 4990, credits: 3800 },
-    monthly: { priceInCents: 4990, credits: 4180 },
-    yearly: { priceInCents: 49900, credits: 50160 },
+    monthly: { priceInCents: 4990, credits: 4940 },
+    yearly: { priceInCents: 49900, credits: 59280 },
   },
   studio: {
     onetime: { priceInCents: 12900, credits: 10500 },
-    monthly: { priceInCents: 12900, credits: 11550 },
-    yearly: { priceInCents: 129000, credits: 138600 },
+    monthly: { priceInCents: 12900, credits: 13650 },
+    yearly: { priceInCents: 129000, credits: 163800 },
   },
+};
+
+/**
+ * Low-price entry pack, one per account (enforced at checkout). 480 credits
+ * cover one 720p · 5s clip or two 480p · 5s clips; effective multiple 4.9×.
+ */
+export const TRIAL_PRODUCT_ID = 'trial_onetime';
+
+const TRIAL_PRODUCT: PricingProduct = {
+  productId: TRIAL_PRODUCT_ID,
+  productName: 'Trial',
+  planName: 'Trial Pack',
+  description: 'Trial credit pack',
+  type: PaymentType.ONE_TIME,
+  priceInCents: 499,
+  currency: 'usd',
+  credits: 480,
 };
 
 export function pricingProductId(tier: PricingTier, cycle: PricingCycle) {
@@ -120,15 +138,17 @@ function buildProduct(tier: PricingTier, cycle: PricingCycle): PricingProduct {
 }
 
 /** Keys MUST match what the pricing UI sends as product_id. */
-export const pricingCatalog: Record<string, PricingProduct> =
-  Object.fromEntries(
+export const pricingCatalog: Record<string, PricingProduct> = {
+  [TRIAL_PRODUCT_ID]: TRIAL_PRODUCT,
+  ...Object.fromEntries(
     PRICING_TIERS.flatMap((tier) =>
       PRICING_CYCLES.map((cycle) => [
         pricingProductId(tier, cycle),
         buildProduct(tier, cycle),
       ])
     )
-  );
+  ),
+};
 
 export function getPricingProduct(productId: string): PricingProduct | null {
   if (!productId) return null;

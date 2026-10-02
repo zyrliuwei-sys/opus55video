@@ -614,7 +614,7 @@ export const Route = createFileRoute('/create')({
   loader: () => ({ locale: getLocale() }),
   head: ({ loaderData }) => {
     const locale = loaderData?.locale ?? 'en';
-    const title = `${m['studio.title']({}, { locale })} | ${envConfigs.app_name}`;
+    const title = m['studio.meta_title']({}, { locale });
     const description = m['studio.video.description']({}, { locale });
     const urlFor = (loc: string) =>
       localizeUrl(`${envConfigs.app_url}/create`, { locale: loc as any }).href;
@@ -625,6 +625,8 @@ export const Route = createFileRoute('/create')({
         { property: 'og:title', content: title },
         { property: 'og:description', content: description },
         { property: 'og:type', content: 'website' },
+        { property: 'og:url', content: urlFor(locale) },
+        { property: 'og:site_name', content: envConfigs.app_name },
         {
           property: 'og:image',
           content: `${envConfigs.app_url}/imgs/generated/opus-hero-eclipse.jpg`,

@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
+import { envConfigs } from '@/config';
 import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
 import { Footer } from '@/blocks/footer';
@@ -10,7 +11,7 @@ export const Route = createFileRoute('/pricing')({
   loader: () => {
     const locale = getLocale();
     return {
-      title: m['landing.pricing.title']({}, { locale }),
+      title: `${m['landing.pricing.title']({}, { locale })} | ${envConfigs.app_name}`,
       description: m['landing.pricing.description']({}, { locale }),
     };
   },

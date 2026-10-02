@@ -649,3 +649,20 @@ export async function getUserOrders(userId: string) {
     .where(and(eq(order.userId, userId), isNull(order.deletedAt)))
     .orderBy(desc(order.createdAt));
 }
+
+/** Whether the user already paid for this product (used for one-per-account packs). */
+export async function hasPaidOrder(userId: string, productId: string) {
+  const [row] = await db()
+    .select({ id: order.id })
+    .from(order)
+    .where(
+      and(
+        eq(order.userId, userId),
+        eq(order.productId, productId),
+        eq(order.status, OrderStatus.PAID),
+        isNull(order.deletedAt)
+      )
+    )
+    .limit(1);
+  return Boolean(row);
+}

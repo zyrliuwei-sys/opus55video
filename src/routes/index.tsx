@@ -5,6 +5,15 @@ import { m } from '@/paraglide/messages.js';
 import { getLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
 import { OpusHome } from '@/blocks/opus-home';
 
+// Same questions as the FAQ section in OpusHome, for FAQPage rich results.
+const FAQ = [
+  [m['opus.story.faq.one.question'], m['opus.story.faq.one.answer']],
+  [m['opus.story.faq.two.question'], m['opus.story.faq.two.answer']],
+  [m['opus.story.faq.three.question'], m['opus.story.faq.three.answer']],
+  [m['opus.story.faq.four.question'], m['opus.story.faq.four.answer']],
+  [m['opus.story.faq.five.question'], m['opus.story.faq.five.answer']],
+] as const;
+
 export const Route = createFileRoute('/')({
   loader: () => ({ locale: getLocale() }),
   head: ({ loaderData }) => {
@@ -23,6 +32,8 @@ export const Route = createFileRoute('/')({
         { property: 'og:title', content: title },
         { property: 'og:description', content: description },
         { property: 'og:type', content: 'website' },
+        { property: 'og:url', content: urlFor(locale) },
+        { property: 'og:site_name', content: envConfigs.app_name },
         {
           property: 'og:image',
           content: `${envConfigs.app_url}/imgs/generated/opus-hero-eclipse.jpg`,
@@ -43,12 +54,43 @@ export const Route = createFileRoute('/')({
           type: 'application/ld+json',
           children: JSON.stringify({
             '@context': 'https://schema.org',
-            '@type': 'WebPage',
-            name: title,
-            description,
-            url: urlFor(locale),
-            inLanguage: locale,
-            primaryImageOfPage: `${envConfigs.app_url}/imgs/generated/opus-hero-eclipse.jpg`,
+            '@graph': [
+              {
+                '@type': 'Organization',
+                '@id': `${envConfigs.app_url}/#organization`,
+                name: envConfigs.app_name,
+                url: `${envConfigs.app_url}/`,
+                logo: `${envConfigs.app_url}${envConfigs.app_logo}`,
+              },
+              {
+                '@type': 'WebSite',
+                '@id': `${envConfigs.app_url}/#website`,
+                name: envConfigs.app_name,
+                url: `${envConfigs.app_url}/`,
+                publisher: { '@id': `${envConfigs.app_url}/#organization` },
+                inLanguage: locale,
+              },
+              {
+                '@type': 'WebPage',
+                name: title,
+                description,
+                url: urlFor(locale),
+                inLanguage: locale,
+                isPartOf: { '@id': `${envConfigs.app_url}/#website` },
+                primaryImageOfPage: `${envConfigs.app_url}/imgs/generated/opus-hero-eclipse.jpg`,
+              },
+              {
+                '@type': 'FAQPage',
+                mainEntity: FAQ.map(([question, answer]) => ({
+                  '@type': 'Question',
+                  name: question({}, { locale: locale as any }),
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: answer({}, { locale: locale as any }),
+                  },
+                })),
+              },
+            ],
           }),
         },
       ],

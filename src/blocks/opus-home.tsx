@@ -185,6 +185,7 @@ function Showcase() {
     {
       src: assets.train,
       title: m['opus.showcase.one'](),
+      alt: m['opus.showcase.one_alt'](),
       className: 'opus-scene-train',
       width: 1448,
       height: 1086,
@@ -192,6 +193,7 @@ function Showcase() {
     {
       src: assets.dancer,
       title: m['opus.showcase.two'](),
+      alt: m['opus.showcase.two_alt'](),
       className: 'opus-scene-dancer',
       width: 886,
       height: 665,
@@ -199,6 +201,7 @@ function Showcase() {
     {
       src: assets.hero,
       title: m['opus.showcase.three'](),
+      alt: m['opus.showcase.three_alt'](),
       className: 'opus-scene-eclipse',
       width: 1672,
       height: 941,
@@ -217,7 +220,7 @@ function Showcase() {
           <div key={frame.title} className={`opus-scene ${frame.className}`}>
             <img
               src={frame.src}
-              alt={frame.title}
+              alt={frame.alt}
               width={frame.width}
               height={frame.height}
               loading="lazy"
