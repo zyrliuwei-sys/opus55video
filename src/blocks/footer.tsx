@@ -33,7 +33,7 @@ export function Footer() {
     <SiteFooter
       tagline={m['opus.footer.tagline']()}
       columns={columns}
-      badges={<FooterBadgeList className="mt-8" />}
+      badges={<FooterBadgeList className="mt-5" />}
     />
   );
 }

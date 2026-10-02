@@ -177,6 +177,40 @@
   }
 }
 
+/* Footer badge marquee: track holds the list twice, slides by half its width. */
+@keyframes footer-badge-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.footer-badge-marquee {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+}
+
+.footer-badge-marquee-track {
+  animation: footer-badge-marquee 60s linear infinite;
+}
+
+.footer-badge-marquee:hover .footer-badge-marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-badge-marquee-track {
+    animation: none;
+  }
+}
+
 .opus-app-shell {
   background: var(--background);
 }

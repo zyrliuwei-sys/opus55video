@@ -30,7 +30,7 @@ export function SiteFooter({
   columns?: FooterColumn[];
   socials?: FooterSocial[];
   copyright?: string;
-  /** Optional badge row rendered above the bottom bar. */
+  /** Optional badge row rendered below the bottom bar. */
   badges?: ReactNode;
 }) {
   const year = new Date().getFullYear();
@@ -110,8 +110,6 @@ export function SiteFooter({
           </div>
         )}
 
-        {badges}
-
         {/* Bottom bar */}
         <div className="border-border mt-6 flex flex-col gap-3 border-t pt-5 sm:flex-row sm:items-center sm:justify-between">
           <span className="text-muted-foreground text-sm">
@@ -119,6 +117,8 @@ export function SiteFooter({
               `© ${year} ${envConfigs.app_name}. All rights reserved.`}
           </span>
         </div>
+
+        {badges}
       </div>
     </footer>
   );
