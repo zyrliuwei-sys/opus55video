@@ -64,6 +64,11 @@ export function PricingTable({
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
   const currentGroup = groups.find((g) => g.key === activeGroup) || groups[0];
+  // One solid CTA per group: the light-tone card if there is one, otherwise
+  // the featured plan. Every other CTA uses the soft gold style.
+  const hasLightPlan = currentGroup?.plans.some((p) => p.tone === 'light');
+  const isSolidCta = (plan: PricingPlan) =>
+    hasLightPlan ? plan.tone === 'light' : Boolean(plan.featured);
 
   const checkoutMutation = useMutation({
     mutationFn: (plan: PricingPlan) =>
@@ -207,7 +212,11 @@ export function PricingTable({
             {/* CTA — full-width pill */}
             <Button
               variant="default"
-              className="h-10 w-full rounded-full text-sm font-medium"
+              className={cn(
+                'h-10 w-full rounded-full text-sm font-medium',
+                !isSolidCta(plan) &&
+                  'border-primary/60 bg-primary/10 text-primary hover:bg-primary/20 border'
+              )}
               onClick={() => handleCheckout(plan)}
               disabled={loadingId === plan.id}
             >
