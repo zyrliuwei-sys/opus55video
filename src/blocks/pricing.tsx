@@ -90,10 +90,18 @@ function buildTrialPlan(): PricingPlan {
     name: () => m['landing.pricing.tier.trial'](),
     desc: () => m['landing.pricing.tier.trial_desc'](),
   });
-  plan.features.push({
-    icon: CircleUser,
-    label: m['landing.pricing.f_once_per_account'](),
-  });
+  plan.features.push(
+    {
+      icon: Gift,
+      label: m['landing.pricing.f_trial_upgrade']({
+        amount: formatUsd(pricingCatalog[TRIAL_PRODUCT_ID].priceInCents),
+      }),
+    },
+    {
+      icon: CircleUser,
+      label: m['landing.pricing.f_once_per_account'](),
+    }
+  );
   plan.buttonText = m['landing.pricing.buy_trial']();
   return plan;
 }

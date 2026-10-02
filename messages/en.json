@@ -820,7 +820,7 @@
   "landing.pricing.tier.pro_desc": "For regular creators",
   "landing.pricing.tier.studio_desc": "For teams and high volume",
   "landing.pricing.f_credits": "{credits} credits",
-  "landing.pricing.f_standard_images": "≈ {count} standard 1K images",
+  "landing.pricing.f_standard_images": "≈ {count} × standard 1K image",
   "landing.pricing.f_never_expire": "Credits never expire",
   "landing.pricing.f_monthly": "New credits every month, +30% bonus",
   "landing.pricing.f_yearly": "12 months of credits upfront for the price of 10",
@@ -1062,10 +1062,10 @@
   "studio.video.cost_note": "Credits are charged by resolution and duration when you submit. If a generation fails, the credits are refunded automatically.",
   "studio.video.wait_hint": "Rendering, usually 2–5 min",
   "studio.video.refunded": "credits refunded",
-  "landing.pricing.f_videos_720": "≈ {count} videos at 720p · 5s",
-  "landing.pricing.f_videos_480": "≈ {count} videos at 480p · 5s",
+  "landing.pricing.f_videos_720": "≈ {count} × 720p · 5s video",
+  "landing.pricing.f_videos_480": "≈ {count} × 480p · 5s video",
   "landing.pricing.tier.trial": "Trial",
-  "landing.pricing.tier.trial_desc": "See the quality before a bigger pack",
+  "landing.pricing.tier.trial_desc": "Try it first, then upgrade to any pack by paying only the difference",
   "landing.pricing.f_once_per_account": "One purchase per account",
   "landing.pricing.buy_trial": "Try it now",
   "landing.pricing.trial_used": "You've already bought the trial pack. Upgrade to any credit pack and pay only the difference.",
@@ -1079,5 +1079,6 @@
   "landing.pricing.upgrade_button": "Upgrade for the difference",
   "landing.pricing.upgrade_unavailable": "The upgrade offer has already been used on this account.",
   "studio.upgrade.chip": "Upgrade for the difference",
-  "studio.upgrade.description": "Pay only the difference for any credit pack and get its full credits."
+  "studio.upgrade.description": "Pay only the difference for any credit pack and get its full credits.",
+  "landing.pricing.f_trial_upgrade": "{amount} deducted when you upgrade to a bigger pack"
 }
