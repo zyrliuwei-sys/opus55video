@@ -30,6 +30,7 @@ import {
 import { ApiError, apiGet, apiPost, apiUpload } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
 import { m } from '@/paraglide/messages.js';
+import { UpgradeOfferHint } from '@/blocks/upgrade-offer-hint';
 import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -259,13 +260,16 @@ export function VideoStudio({
                 </div>
               </div>
               {signedIn && (
-                <Link
-                  href="/pricing"
-                  className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-xs"
-                >
-                  <Coins className="size-3.5" />
-                  {m['studio.image.balance']({ credits: balance })}
-                </Link>
+                <div className="flex flex-col items-end gap-1">
+                  <Link
+                    href="/pricing"
+                    className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-xs"
+                  >
+                    <Coins className="size-3.5" />
+                    {m['studio.image.balance']({ credits: balance })}
+                  </Link>
+                  <UpgradeOfferHint compact />
+                </div>
               )}
             </div>
 
@@ -515,16 +519,19 @@ export function VideoStudio({
                           <ArrowUpRight className="size-4" />
                         </Link>
                       ) : short ? (
-                        <Link
-                          href="/pricing"
-                          className={cn(
-                            buttonVariants({ size: 'lg' }),
-                            'opus-studio-submit w-full gap-2'
-                          )}
-                        >
-                          <Coins className="size-4" />
-                          {m['studio.image.buy_credits']()}
-                        </Link>
+                        <>
+                          <Link
+                            href="/pricing"
+                            className={cn(
+                              buttonVariants({ size: 'lg' }),
+                              'opus-studio-submit w-full gap-2'
+                            )}
+                          >
+                            <Coins className="size-4" />
+                            {m['studio.image.buy_credits']()}
+                          </Link>
+                          <UpgradeOfferHint />
+                        </>
                       ) : (
                         <Button
                           type="submit"

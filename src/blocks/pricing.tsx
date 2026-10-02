@@ -8,6 +8,7 @@ import {
   Clapperboard,
   Coins,
   Film,
+  Gift,
   Image,
   RotateCcw,
 } from 'lucide-react';
@@ -21,6 +22,7 @@ import {
   pricingCatalog,
   pricingProductId,
   TRIAL_PRODUCT_ID,
+  upgradeProductId,
   type PricingCycle,
   type PricingTier,
 } from '@/config/pricing';
@@ -30,6 +32,7 @@ import { currentPathWithQuery } from '@/lib/redirect';
 import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
 import { usePublicConfig } from '@/hooks/use-public-config';
+import { useUpgradeOffer } from '@/hooks/use-upgrade-offer';
 import {
   PaymentProviderModal,
   type PaymentProvider,
@@ -92,6 +95,24 @@ function buildTrialPlan(): PricingPlan {
     label: m['landing.pricing.f_once_per_account'](),
   });
   plan.buttonText = m['landing.pricing.buy_trial']();
+  return plan;
+}
+
+/** Trial buyers: a one-time pack for the price difference, full credits. */
+function buildUpgradePlan(tier: PricingTier): PricingPlan {
+  const plan = planFromProduct(
+    pricingCatalog[upgradeProductId(tier)],
+    'onetime',
+    TIER_COPY[tier],
+    tier === 'pro'
+  );
+  plan.originalPrice = formatUsd(
+    pricingCatalog[pricingProductId(tier, 'onetime')].priceInCents
+  );
+  plan.priceNote = m['landing.pricing.upgrade_note']({
+    amount: formatUsd(pricingCatalog[TRIAL_PRODUCT_ID].priceInCents),
+  });
+  plan.buttonText = m['landing.pricing.upgrade_button']();
   return plan;
 }
 
@@ -202,6 +223,18 @@ export function Pricing({ title }: { title?: string } = {}) {
     [configs]
   );
 
+  const upgradeQuery = useUpgradeOffer();
+  const trialPurchased = upgradeQuery.data?.trialPurchased ?? false;
+  const upgradeAvailable = upgradeQuery.data?.upgradeAvailable ?? false;
+
+  // One-time tab: trial buyers see difference pricing (once), and nobody who
+  // already bought the trial is offered it again.
+  function onetimePlans() {
+    if (upgradeAvailable) return PRICING_TIERS.map(buildUpgradePlan);
+    const packs = PRICING_TIERS.map((tier) => buildPlan(tier, 'onetime'));
+    return trialPurchased ? packs : [buildTrialPlan(), ...packs];
+  }
+
   const groups: PricingGroup[] = [
     { key: 'onetime', label: m['landing.pricing.onetime']() },
     { key: 'monthly', label: m['landing.pricing.monthly']() },
@@ -209,10 +242,10 @@ export function Pricing({ title }: { title?: string } = {}) {
   ].map(({ key, label }) => ({
     key,
     label,
-    plans: [
-      ...(key === 'onetime' ? [buildTrialPlan()] : []),
-      ...PRICING_TIERS.map((tier) => buildPlan(tier, key as PricingCycle)),
-    ],
+    plans:
+      key === 'onetime'
+        ? onetimePlans()
+        : PRICING_TIERS.map((tier) => buildPlan(tier, key as PricingCycle)),
   }));
 
   const checkoutMutation = useMutation({
@@ -250,7 +283,9 @@ export function Pricing({ title }: { title?: string } = {}) {
       toast.error(
         err?.message === 'TRIAL_ALREADY_PURCHASED'
           ? m['landing.pricing.trial_used']()
-          : err?.message || 'Checkout failed'
+          : err?.message === 'UPGRADE_NOT_AVAILABLE'
+            ? m['landing.pricing.upgrade_unavailable']()
+            : err?.message || 'Checkout failed'
       );
       setLoadingProvider(null);
     },
@@ -301,6 +336,25 @@ export function Pricing({ title }: { title?: string } = {}) {
             {m['landing.pricing.description']()}
           </p>
         </div>
+        {upgradeAvailable && (
+          <div className="border-primary/40 bg-primary/5 mx-auto mb-10 flex max-w-3xl items-start gap-4 rounded-2xl border p-5 text-left">
+            <span className="bg-primary/15 text-primary grid size-10 shrink-0 place-items-center rounded-full">
+              <Gift className="size-5" />
+            </span>
+            <div>
+              <p className="font-medium">
+                {m['landing.pricing.upgrade_banner_title']({
+                  amount: formatUsd(
+                    pricingCatalog[TRIAL_PRODUCT_ID].priceInCents
+                  ),
+                })}
+              </p>
+              <p className="text-muted-foreground mt-1 text-sm">
+                {m['landing.pricing.upgrade_banner_desc']()}
+              </p>
+            </div>
+          </div>
+        )}
         <PricingTable groups={groups} onCheckout={handleCheckout} />
       </div>
 

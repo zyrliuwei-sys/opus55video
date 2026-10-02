@@ -1068,9 +1068,16 @@
   "landing.pricing.tier.trial_desc": "See the quality before a bigger pack",
   "landing.pricing.f_once_per_account": "One purchase per account",
   "landing.pricing.buy_trial": "Try it now",
-  "landing.pricing.trial_used": "You've already used the trial pack — pick any other pack to continue.",
+  "landing.pricing.trial_used": "You've already bought the trial pack. Upgrade to any credit pack and pay only the difference.",
   "studio.meta_title": "opus55video Studio – AI Text & Image to Video Online",
   "opus.showcase.one_alt": "AI generated video frame: a woman in a red satin coat gazing out of a night train window at a city skyline – opus55video",
   "opus.showcase.two_alt": "AI generated video frame: a dancer in a flowing white dress spinning on misty palace steps – opus55video",
-  "opus.showcase.three_alt": "AI generated video frame: an astronaut on a volcanic coast beneath a solar eclipse – opus55video"
+  "opus.showcase.three_alt": "AI generated video frame: an astronaut on a volcanic coast beneath a solar eclipse – opus55video",
+  "landing.pricing.upgrade_banner_title": "Your {amount} trial counts toward a bigger pack",
+  "landing.pricing.upgrade_banner_desc": "Pay only the difference on any one-time credit pack below and get the pack's full credits. Your remaining trial credits stay in your balance. Available once per account.",
+  "landing.pricing.upgrade_note": "{amount} trial already deducted",
+  "landing.pricing.upgrade_button": "Upgrade for the difference",
+  "landing.pricing.upgrade_unavailable": "The upgrade offer has already been used on this account.",
+  "studio.upgrade.chip": "Upgrade for the difference",
+  "studio.upgrade.description": "Pay only the difference for any credit pack and get its full credits."
 }

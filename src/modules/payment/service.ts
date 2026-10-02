@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull } from 'drizzle-orm';
+import { and, desc, eq, isNull, like } from 'drizzle-orm';
 
 import { db } from '@/core/db';
 import {
@@ -18,6 +18,7 @@ import {
   type PaymentOrder,
 } from '@/core/payment/types';
 import { credit, order, subscription } from '@/config/db/schema';
+import { TRIAL_PRODUCT_ID, UPGRADE_PRODUCT_PREFIX } from '@/config/pricing';
 import { getAllConfigs } from '@/modules/config/service';
 import { calculateCreditExpirationTime } from '@/modules/credits/service';
 import {
@@ -665,4 +666,28 @@ export async function hasPaidOrder(userId: string, productId: string) {
     )
     .limit(1);
   return Boolean(row);
+}
+
+/**
+ * Trial upgrade status: a trial buyer may buy one one-time pack for the
+ * price difference, once per account.
+ */
+export async function getTrialUpgradeStatus(userId: string) {
+  const paid = await db()
+    .select({ productId: order.productId })
+    .from(order)
+    .where(
+      and(
+        eq(order.userId, userId),
+        eq(order.status, OrderStatus.PAID),
+        isNull(order.deletedAt),
+        like(order.productId, `%_onetime`)
+      )
+    );
+  const ids: string[] = paid.map(
+    (row: { productId: string | null }) => row.productId ?? ''
+  );
+  const trialPurchased = ids.includes(TRIAL_PRODUCT_ID);
+  const upgradeUsed = ids.some((id) => id.startsWith(UPGRADE_PRODUCT_PREFIX));
+  return { trialPurchased, upgradeAvailable: trialPurchased && !upgradeUsed };
 }

@@ -1,9 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 import { getAuth } from '@/core/auth';
-import { getPricingProduct, TRIAL_PRODUCT_ID } from '@/config/pricing';
+import {
+  getPricingProduct,
+  TRIAL_PRODUCT_ID,
+  UPGRADE_PRODUCT_PREFIX,
+} from '@/config/pricing';
 import { getAllConfigs } from '@/modules/config/service';
-import { createCheckout, hasPaidOrder } from '@/modules/payment/service';
+import {
+  createCheckout,
+  getTrialUpgradeStatus,
+  hasPaidOrder,
+} from '@/modules/payment/service';
 import { enforceMinIntervalRateLimit } from '@/lib/rate-limit';
 import { respData, respErr } from '@/lib/resp';
 
@@ -58,6 +66,14 @@ async function POST({ request }: { request: Request }) {
       (await hasPaidOrder(session.user.id, TRIAL_PRODUCT_ID))
     ) {
       return respErr('TRIAL_ALREADY_PURCHASED');
+    }
+
+    // Upgrade (difference) pricing is only for trial buyers, once.
+    if (
+      product.productId.startsWith(UPGRADE_PRODUCT_PREFIX) &&
+      !(await getTrialUpgradeStatus(session.user.id)).upgradeAvailable
+    ) {
+      return respErr('UPGRADE_NOT_AVAILABLE');
     }
 
     // Optional per-provider "test amount" override (admin-configured).

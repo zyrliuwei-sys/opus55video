@@ -97,6 +97,28 @@ const TRIAL_PRODUCT: PricingProduct = {
   credits: 480,
 };
 
+/**
+ * Trial upgrade: a trial buyer can buy any one-time pack once for the price
+ * difference (pack − trial) and still gets the full pack's credits; the trial
+ * credits stay in their balance. Eligibility is enforced at checkout.
+ */
+export const UPGRADE_PRODUCT_PREFIX = 'upgrade_';
+
+export function upgradeProductId(tier: PricingTier) {
+  return `${UPGRADE_PRODUCT_PREFIX}${pricingProductId(tier, 'onetime')}`;
+}
+
+function buildUpgradeProduct(tier: PricingTier): PricingProduct {
+  const pack = buildProduct(tier, 'onetime');
+  return {
+    ...pack,
+    productId: upgradeProductId(tier),
+    planName: `${pack.planName} (trial upgrade)`,
+    description: `${pack.description}, trial upgrade`,
+    priceInCents: pack.priceInCents - TRIAL_PRODUCT.priceInCents,
+  };
+}
+
 export function pricingProductId(tier: PricingTier, cycle: PricingCycle) {
   return `${tier}_${cycle}`;
 }
@@ -147,6 +169,12 @@ export const pricingCatalog: Record<string, PricingProduct> = {
         buildProduct(tier, cycle),
       ])
     )
+  ),
+  ...Object.fromEntries(
+    PRICING_TIERS.map((tier) => [
+      upgradeProductId(tier),
+      buildUpgradeProduct(tier),
+    ])
   ),
 };
 
