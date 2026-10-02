@@ -1642,3 +1642,9 @@
 .opus-home #pricing p.mb-8 {
   margin-bottom: 2rem;
 }
+
+/* FAQ is its own section (below pricing); the section already draws the top rule. */
+.opus-faq-section .opus-story-block {
+  padding-top: 0;
+  border-top: 0;
+}

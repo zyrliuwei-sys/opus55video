@@ -284,28 +284,6 @@ function Story() {
       description: m['opus.story.use.three.description'](),
     },
   ];
-  const questions = [
-    {
-      question: m['opus.story.faq.one.question'](),
-      answer: m['opus.story.faq.one.answer'](),
-    },
-    {
-      question: m['opus.story.faq.two.question'](),
-      answer: m['opus.story.faq.two.answer'](),
-    },
-    {
-      question: m['opus.story.faq.three.question'](),
-      answer: m['opus.story.faq.three.answer'](),
-    },
-    {
-      question: m['opus.story.faq.four.question'](),
-      answer: m['opus.story.faq.four.answer'](),
-    },
-    {
-      question: m['opus.story.faq.five.question'](),
-      answer: m['opus.story.faq.five.answer'](),
-    },
-  ];
 
   return (
     <section
@@ -353,9 +331,41 @@ function Story() {
           </div>
         </dl>
       </div>
+    </section>
+  );
+}
 
+function FAQ() {
+  const questions = [
+    {
+      question: m['opus.story.faq.one.question'](),
+      answer: m['opus.story.faq.one.answer'](),
+    },
+    {
+      question: m['opus.story.faq.two.question'](),
+      answer: m['opus.story.faq.two.answer'](),
+    },
+    {
+      question: m['opus.story.faq.three.question'](),
+      answer: m['opus.story.faq.three.answer'](),
+    },
+    {
+      question: m['opus.story.faq.four.question'](),
+      answer: m['opus.story.faq.four.answer'](),
+    },
+    {
+      question: m['opus.story.faq.five.question'](),
+      answer: m['opus.story.faq.five.answer'](),
+    },
+  ];
+  return (
+    <section
+      id="faq"
+      className="opus-section opus-story opus-faq-section"
+      aria-labelledby="opus-faq-title"
+    >
       <div className="opus-story-block opus-story-faq">
-        <h3>{m['opus.story.faq.title']()}</h3>
+        <h3 id="opus-faq-title">{m['opus.story.faq.title']()}</h3>
         <div className="opus-faq-list">
           {questions.map((item) => (
             <article className="opus-faq-item" key={item.question}>
@@ -437,6 +447,7 @@ export function OpusHome() {
         <div className="opus-pricing dark">
           <Pricing />
         </div>
+        <FAQ />
         <CTA />
       </main>
       <Footer />
