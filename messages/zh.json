@@ -1065,7 +1065,7 @@
   "landing.pricing.f_videos_720": "约 {count} 条 720p · 5 秒视频",
   "landing.pricing.f_videos_480": "约 {count} 条 480p · 5 秒视频",
   "landing.pricing.tier.trial": "体验包",
-  "landing.pricing.tier.trial_desc": "先体验效果，之后升级任意积分包只需补差价",
+  "landing.pricing.tier.trial_desc": "先看效果，再决定买大包",
   "landing.pricing.f_once_per_account": "每个账号限购一次",
   "landing.pricing.buy_trial": "立即体验",
   "landing.pricing.trial_used": "你已购买过体验包，现在升级任意积分包只需补差价。",
@@ -1080,5 +1080,6 @@
   "landing.pricing.upgrade_unavailable": "该账号已使用过补差价升级优惠。",
   "studio.upgrade.chip": "可补差价升级",
   "studio.upgrade.description": "补差价即可升级任意积分包，获得整包积分。",
-  "landing.pricing.f_trial_upgrade": "升级更大积分包时可抵扣 {amount}"
+  "landing.pricing.trial_highlight_title": "之后可补差价升级",
+  "landing.pricing.trial_highlight_text": "升级任意更大的积分包时，这 {amount} 全额抵扣。"
 }

@@ -1065,7 +1065,7 @@
   "landing.pricing.f_videos_720": "≈ {count} × 720p · 5s video",
   "landing.pricing.f_videos_480": "≈ {count} × 480p · 5s video",
   "landing.pricing.tier.trial": "Trial",
-  "landing.pricing.tier.trial_desc": "Try it first, then upgrade to any pack by paying only the difference",
+  "landing.pricing.tier.trial_desc": "See the quality before a bigger pack",
   "landing.pricing.f_once_per_account": "One purchase per account",
   "landing.pricing.buy_trial": "Try it now",
   "landing.pricing.trial_used": "You've already bought the trial pack. Upgrade to any credit pack and pay only the difference.",
@@ -1080,5 +1080,6 @@
   "landing.pricing.upgrade_unavailable": "The upgrade offer has already been used on this account.",
   "studio.upgrade.chip": "Upgrade for the difference",
   "studio.upgrade.description": "Pay only the difference for any credit pack and get its full credits.",
-  "landing.pricing.f_trial_upgrade": "{amount} deducted when you upgrade to a bigger pack"
+  "landing.pricing.trial_highlight_title": "Upgrade later for the difference",
+  "landing.pricing.trial_highlight_text": "Your {amount} is fully deducted when you upgrade to any bigger pack."
 }

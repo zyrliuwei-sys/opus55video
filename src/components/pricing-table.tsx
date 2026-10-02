@@ -28,6 +28,8 @@ export interface PricingPlan {
   interval?: string;
   featured?: boolean;
   badge?: string;
+  /** Eye-catching callout under the price, e.g. an upgrade perk. */
+  highlight?: { icon?: IconComponent; title: string; text?: string };
   features: PricingFeature[];
   buttonText?: string;
   productId?: string;
@@ -172,6 +174,25 @@ export function PricingTable({
               <span className="text-muted-foreground mb-1 text-sm">
                 {plan.priceNote}
               </span>
+            )}
+
+            {/* Highlight callout */}
+            {plan.highlight && (
+              <div className="border-primary/60 bg-primary/10 mt-2 mb-4 flex items-start gap-2.5 rounded-lg border p-3">
+                {plan.highlight.icon && (
+                  <plan.highlight.icon className="text-primary mt-0.5 size-4 shrink-0" />
+                )}
+                <div>
+                  <p className="text-primary text-sm font-semibold">
+                    {plan.highlight.title}
+                  </p>
+                  {plan.highlight.text && (
+                    <p className="text-foreground/80 mt-0.5 text-xs leading-relaxed">
+                      {plan.highlight.text}
+                    </p>
+                  )}
+                </div>
+              </div>
             )}
 
             {/* Description */}
