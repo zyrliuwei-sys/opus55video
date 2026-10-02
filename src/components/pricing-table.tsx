@@ -28,7 +28,7 @@ export interface PricingPlan {
   interval?: string;
   featured?: boolean;
   badge?: string;
-  /** 'light' renders the card on the light palette so it stands out. */
+  /** 'light' renders the card on a slightly lighter warm brown so it stands out. */
   tone?: 'light';
   /** Eye-catching callout under the price, e.g. an upgrade perk. */
   highlight?: { icon?: IconComponent; title: string; text?: string };
@@ -145,7 +145,7 @@ export function PricingTable({
             className={cn(
               'border-border relative flex flex-col rounded-2xl border p-8 transition-all',
               plan.tone === 'light'
-                ? 'light bg-card text-foreground border-transparent'
+                ? 'border-primary/50 bg-[#211c18]'
                 : 'bg-background hover:border-foreground/30'
             )}
           >
@@ -206,7 +206,7 @@ export function PricingTable({
 
             {/* CTA — full-width pill */}
             <Button
-              variant={plan.featured ? 'default' : 'outline'}
+              variant="default"
               className="h-10 w-full rounded-full text-sm font-medium"
               onClick={() => handleCheckout(plan)}
               disabled={loadingId === plan.id}
