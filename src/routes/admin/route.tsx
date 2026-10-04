@@ -5,6 +5,7 @@ import {
   FolderOpen,
   Home,
   LayoutDashboard,
+  Radar,
   Settings,
   Shield,
 } from 'lucide-react';
@@ -68,6 +69,11 @@ function AdminLayout() {
       href: '/admin/footer-badges',
       label: m['admin.nav.footer_badges'](),
       icon: BadgeCheck,
+    },
+    {
+      href: '/admin/indexnow',
+      label: m['admin.nav.indexnow'](),
+      icon: Radar,
     },
     {
       href: '/admin/settings',
